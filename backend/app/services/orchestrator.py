@@ -1,0 +1,443 @@
+"""
+API Orchestrator.
+
+Given a validated ParsedQuery, routes to the appropriate upstream API
+client(s) (Products, Reviews, News, Price, Search), applies the
+optimization rule (skip Gemini entirely for simple direct-lookup
+answers), and assembles the final ChatResponse including product/article
+cards, related links, and metadata.
+"""
+
+from typing import Any, Dict, List, Optional, Tuple
+
+from app.api_clients.news_client import NewsClient
+from app.api_clients.price_client import PriceClient
+from app.api_clients.products_client import ProductsClient
+from app.api_clients.reviews_client import ReviewsClient
+from app.api_clients.search_client import SearchClient
+from app.models.schemas import (
+    ArticleCard,
+    ParsedQuery,
+    ProductCard,
+    RelatedLink,
+    ResponseMetadata,
+)
+from app.services.cache_service import get_cached_api_result, set_cached_api_result
+from app.services.gemini_service import GeminiService, GeminiServiceError
+from app.services.prompt_builder import build_api_context
+from app.utils.helpers import format_currency, new_id, stable_hash
+from app.utils.logger import get_logger
+
+logger = get_logger(__name__)
+
+# Entities that resolve to a direct finance/commodity rate lookup instead
+# of the product pipeline.
+FINANCE_ENTITIES = {
+    "crypto", "gold", "silver", "petrol", "diesel", "stock", "finance",
+    "loan", "banking",
+}
+
+# Intents that are always simple direct lookups and therefore skip Gemini,
+# regardless of the parser's needs_summary flag, per the optimization rule.
+DIRECT_LOOKUP_INTENTS = {"price_lookup", "finance_rate"}
+
+
+class Orchestrator:
+    """Coordinates upstream API calls and response assembly."""
+
+    def __init__(self):
+        self.products_client = ProductsClient()
+        self.reviews_client = ReviewsClient()
+        self.news_client = NewsClient()
+        self.price_client = PriceClient()
+        self.search_client = SearchClient()
+        self.gemini_service = GeminiService()
+
+    async def handle_query(
+        self,
+        user_message: str,
+        parsed: ParsedQuery,
+        history: List[Dict[str, str]],
+    ) -> Dict[str, Any]:
+        """
+        Main orchestration entry point. Returns a dict with all fields
+        needed to build the final ChatResponse.
+        """
+        if parsed.intent == "greeting":
+            return self._build_greeting_response()
+
+        source_apis: List[str] = []
+        product_cards: List[ProductCard] = []
+        article_cards: List[ArticleCard] = []
+        related_links: List[RelatedLink] = []
+
+        # --- Direct finance/commodity rate lookup (always skips Gemini) ---
+        if parsed.entity in FINANCE_ENTITIES and parsed.intent in (
+            "price_lookup",
+            "finance_rate",
+            "search",
+        ):
+            return await self._handle_finance_lookup(parsed)
+
+        # --- Route by intent to the right API(s) ---
+        if parsed.intent == "recommendation":
+            products = await self._get_products(parsed)
+            source_apis.append("products")
+            product_cards = self._to_product_cards(products)
+
+        elif parsed.intent == "comparison":
+            products = await self._get_comparison_products(parsed)
+            source_apis.append("products")
+            product_cards = self._to_product_cards(products)
+
+        elif parsed.intent == "product_detail":
+            products = await self._get_products(parsed, count=1)
+            source_apis.append("products")
+            product_cards = self._to_product_cards(products)
+
+        elif parsed.intent == "review":
+            reviews = await self._get_reviews(parsed)
+            source_apis.append("reviews")
+            article_cards = self._to_article_cards(reviews)
+
+        elif parsed.intent == "news":
+            news = await self._get_news(parsed)
+            source_apis.append("news")
+            article_cards = self._to_article_cards(news)
+
+        elif parsed.intent == "buying_guide":
+            products = await self._get_products(parsed)
+            reviews = await self._get_reviews(parsed)
+            source_apis.extend(["products", "reviews"])
+            product_cards = self._to_product_cards(products)
+            article_cards = self._to_article_cards(reviews)
+
+        elif parsed.intent == "price_lookup":
+            return await self._handle_product_price_lookup(parsed)
+
+        elif parsed.intent == "search":
+            results = await self._get_search_results(parsed, user_message)
+            source_apis.append("search")
+            product_cards = self._to_product_cards(results.get("products", []))
+            article_cards = self._to_article_cards(results.get("articles", []))
+
+        else:
+            # Should not normally happen since domain validation filters
+            # unsupported intents earlier, but handled defensively.
+            return self._build_fallback_response()
+
+        related_links = self._build_related_links(product_cards, article_cards)
+
+        api_data = build_api_context(
+            products=[p.model_dump() for p in product_cards] or None,
+            reviews=(
+                [a.model_dump() for a in article_cards]
+                if parsed.intent == "review"
+                else None
+            ),
+            news=(
+                [a.model_dump() for a in article_cards]
+                if parsed.intent == "news"
+                else None
+            ),
+        )
+
+        # --- Optimization: skip Gemini when raw data is enough ---
+        if not parsed.needs_summary and parsed.intent not in ("comparison", "buying_guide"):
+            answer = self._format_direct_answer(parsed, product_cards, article_cards)
+            used_gemini = False
+        else:
+            answer = await self._generate_summary(user_message, parsed, api_data)
+            used_gemini = True
+
+        return {
+            "answer": answer,
+            "product_cards": product_cards,
+            "article_cards": article_cards,
+            "related_links": related_links,
+            "used_gemini": used_gemini,
+            "source_apis": source_apis,
+        }
+
+    # ------------------------------------------------------------------
+    # Intent-specific data fetchers
+    # ------------------------------------------------------------------
+
+    async def _get_products(self, parsed: ParsedQuery, count: Optional[int] = None) -> List[Dict[str, Any]]:
+        cache_key = stable_hash(
+            {
+                "op": "products",
+                "entity": parsed.entity,
+                "budget": parsed.budget,
+                "priority": parsed.priority,
+                "brand": parsed.brand,
+                "count": count or parsed.count,
+            }
+        )
+        cached = await get_cached_api_result(cache_key)
+        if cached is not None:
+            return cached
+
+        products = await self.products_client.search_products(
+            entity=parsed.entity,
+            budget=parsed.budget,
+            priority=parsed.priority,
+            brand=parsed.brand,
+            count=count or parsed.count or 5,
+        )
+        await set_cached_api_result(cache_key, products)
+        return products
+
+    async def _get_comparison_products(self, parsed: ParsedQuery) -> List[Dict[str, Any]]:
+        if parsed.compare_items:
+            all_products = await self.products_client.search_products(
+                entity=parsed.entity, count=20
+            )
+            name_matches = []
+            for item_name in parsed.compare_items:
+                match = next(
+                    (p for p in all_products if item_name.lower() in p["name"].lower()),
+                    None,
+                )
+                if match:
+                    name_matches.append(match)
+            if name_matches:
+                return name_matches
+
+        return await self._get_products(parsed, count=max(parsed.count or 2, 2))
+
+    async def _get_reviews(self, parsed: ParsedQuery) -> List[Dict[str, Any]]:
+        cache_key = stable_hash(
+            {"op": "reviews", "entity": parsed.entity, "keywords": parsed.keywords}
+        )
+        cached = await get_cached_api_result(cache_key)
+        if cached is not None:
+            return cached
+
+        reviews = await self.reviews_client.get_reviews(
+            entity=parsed.entity, keywords=parsed.keywords, count=parsed.count or 5
+        )
+        await set_cached_api_result(cache_key, reviews)
+        return reviews
+
+    async def _get_news(self, parsed: ParsedQuery) -> List[Dict[str, Any]]:
+        cache_key = stable_hash(
+            {"op": "news", "entity": parsed.entity, "keywords": parsed.keywords}
+        )
+        cached = await get_cached_api_result(cache_key)
+        if cached is not None:
+            return cached
+
+        news = await self.news_client.get_news(
+            entity=parsed.entity, keywords=parsed.keywords, count=parsed.count or 5
+        )
+        await set_cached_api_result(cache_key, news)
+        return news
+
+    async def _get_search_results(
+        self, parsed: ParsedQuery, user_message: str
+    ) -> Dict[str, List[Dict[str, Any]]]:
+        cache_key = stable_hash({"op": "search", "q": user_message})
+        cached = await get_cached_api_result(cache_key)
+        if cached is not None:
+            return cached
+
+        results = await self.search_client.search(
+            query=user_message, keywords=parsed.keywords, count=parsed.count or 5
+        )
+        await set_cached_api_result(cache_key, results)
+        return results
+
+    # ------------------------------------------------------------------
+    # Direct-lookup handlers (always skip Gemini)
+    # ------------------------------------------------------------------
+
+    async def _handle_finance_lookup(self, parsed: ParsedQuery) -> Dict[str, Any]:
+        cache_key = stable_hash({"op": "finance_rate", "entity": parsed.entity})
+        cached = await get_cached_api_result(cache_key)
+
+        if cached is not None:
+            rate = cached
+        else:
+            rate = await self.price_client.get_finance_rate(parsed.entity)
+            await set_cached_api_result(cache_key, rate)
+
+        if rate is None:
+            answer = (
+                f"I couldn't find current {parsed.entity} rate data right now. "
+                "Please try again in a moment."
+            )
+        else:
+            answer = (
+                f"**{rate['asset']}**: {format_currency(rate['price'], rate['currency'])} "
+                f"({rate['unit']})"
+            )
+
+        return {
+            "answer": answer,
+            "product_cards": [],
+            "article_cards": [],
+            "related_links": [],
+            "used_gemini": False,
+            "source_apis": ["price"],
+        }
+
+    async def _handle_product_price_lookup(self, parsed: ParsedQuery) -> Dict[str, Any]:
+        products = await self._get_products(parsed, count=1)
+
+        if not products:
+            return {
+                "answer": "I couldn't find pricing for that product right now.",
+                "product_cards": [],
+                "article_cards": [],
+                "related_links": [],
+                "used_gemini": False,
+                "source_apis": ["price"],
+            }
+
+        product = products[0]
+        price = product.get("price")
+        currency = product.get("currency", "INR")
+        answer = f"**{product['name']}** is priced at {format_currency(price, currency)}."
+
+        card = self._to_product_cards([product])
+
+        return {
+            "answer": answer,
+            "product_cards": card,
+            "article_cards": [],
+            "related_links": self._build_related_links(card, []),
+            "used_gemini": False,
+            "source_apis": ["price", "products"],
+        }
+
+    # ------------------------------------------------------------------
+    # Gemini summary generation
+    # ------------------------------------------------------------------
+
+    async def _generate_summary(
+        self, user_message: str, parsed: ParsedQuery, api_data: Dict[str, Any]
+    ) -> str:
+        try:
+            return await self.gemini_service.generate_response(
+                user_message=user_message,
+                parsed_query=parsed.model_dump(),
+                api_data=api_data,
+            )
+        except GeminiServiceError as exc:
+            logger.error("Gemini response generation failed: %s", exc)
+            return (
+                "I found some relevant information, but I'm having trouble "
+                "summarizing it right now. Please see the details below or "
+                "try again shortly."
+            )
+
+    # ------------------------------------------------------------------
+    # Card / link builders
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _to_product_cards(products: List[Dict[str, Any]]) -> List[ProductCard]:
+        cards = []
+        for p in products:
+            cards.append(
+                ProductCard(
+                    id=p.get("id") or new_id(prefix="prod_"),
+                    name=p.get("name", "Unknown Product"),
+                    brand=p.get("brand"),
+                    price=p.get("price"),
+                    currency=p.get("currency", "INR"),
+                    rating=p.get("rating"),
+                    image_url=p.get("image_url"),
+                    url=p.get("url"),
+                    key_specs=p.get("key_specs", {}),
+                )
+            )
+        return cards
+
+    @staticmethod
+    def _to_article_cards(articles: List[Dict[str, Any]]) -> List[ArticleCard]:
+        cards = []
+        for a in articles:
+            cards.append(
+                ArticleCard(
+                    id=a.get("id") or new_id(prefix="art_"),
+                    title=a.get("title", "Untitled"),
+                    summary=a.get("summary"),
+                    published_at=a.get("published_at"),
+                    image_url=a.get("image_url"),
+                    url=a.get("url"),
+                    category=a.get("category"),
+                )
+            )
+        return cards
+
+    @staticmethod
+    def _build_related_links(
+        product_cards: List[ProductCard], article_cards: List[ArticleCard]
+    ) -> List[RelatedLink]:
+        links = []
+        for p in product_cards:
+            if p.url:
+                links.append(RelatedLink(title=p.name, url=p.url))
+        for a in article_cards:
+            if a.url:
+                links.append(RelatedLink(title=a.title, url=a.url))
+        return links[:8]
+
+    @staticmethod
+    def _format_direct_answer(
+        parsed: ParsedQuery,
+        product_cards: List[ProductCard],
+        article_cards: List[ArticleCard],
+    ) -> str:
+        """Format a direct answer from raw data without calling Gemini."""
+        if product_cards:
+            lines = [f"Here's what I found for **{parsed.entity or 'your search'}**:", ""]
+            for p in product_cards:
+                price_str = format_currency(p.price, p.currency) if p.price else "N/A"
+                rating_str = f" · ⭐ {p.rating}" if p.rating else ""
+                lines.append(f"- **{p.name}** — {price_str}{rating_str}")
+            return "\n".join(lines)
+
+        if article_cards:
+            lines = ["Here's what I found:", ""]
+            for a in article_cards:
+                lines.append(f"- **{a.title}**")
+            return "\n".join(lines)
+
+        return "I couldn't find any matching results right now."
+
+    @staticmethod
+    def _build_greeting_response() -> Dict[str, Any]:
+        return {
+            "answer": (
+                "Hi! I'm the Gadgets360 AI Assistant. Ask me about phones, "
+                "laptops, tablets, smartwatches, TVs, tech news, reviews, "
+                "comparisons, buying guides, or finance topics like crypto, "
+                "gold, silver, fuel, and stock prices."
+            ),
+            "product_cards": [],
+            "article_cards": [],
+            "related_links": [],
+            "used_gemini": False,
+            "source_apis": [],
+        }
+
+    @staticmethod
+    def _build_fallback_response() -> Dict[str, Any]:
+        return {
+            "answer": (
+                "I'm not able to help with that request. I can assist with "
+                "Gadgets360 topics like phones, laptops, tablets, "
+                "smartwatches, TVs, tech news, reviews, and finance rates."
+            ),
+            "product_cards": [],
+            "article_cards": [],
+            "related_links": [],
+            "used_gemini": False,
+            "source_apis": [],
+        }
+
+
+orchestrator = Orchestrator()

@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --scrollbar-thumb: theme('colors.ink.300');
+    --scrollbar-track: transparent;
+  }
+
+  .dark {
+    --scrollbar-thumb: theme('colors.ink.600');
+    --scrollbar-track: transparent;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply font-body bg-ink-50 text-ink-900 antialiased;
+    @apply dark:bg-ink-950 dark:text-ink-100;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+
+  ::selection {
+    @apply bg-brand-400/30;
+  }
+
+  *:focus-visible {
+    outline: 2px solid theme('colors.brand.500');
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 999px;
+  }
+}
+
+/* Markdown answer rendering */
+.g360-markdown {
+  @apply text-[0.925rem] leading-relaxed text-ink-800 dark:text-ink-100;
+}
+
+.g360-markdown p {
+  @apply mb-2.5 last:mb-0;
+}
+
+.g360-markdown strong {
+  @apply font-semibold text-ink-900 dark:text-white;
+}
+
+.g360-markdown ul {
+  @apply mb-2.5 ml-4 list-disc space-y-1;
+}
+
+.g360-markdown ol {
+  @apply mb-2.5 ml-4 list-decimal space-y-1;
+}
+
+.g360-markdown a {
+  @apply text-brand-500 underline decoration-brand-300 underline-offset-2 hover:text-brand-600;
+}
+
+.g360-markdown h1,
+.g360-markdown h2,
+.g360-markdown h3 {
+  @apply mb-2 mt-3 font-display font-semibold text-ink-900 first:mt-0 dark:text-white;
+}
+
+.g360-markdown blockquote {
+  @apply my-2 border-l-2 border-brand-400 pl-3 italic text-ink-600 dark:text-ink-300;
+}
+
+.g360-markdown table {
+  @apply my-2 w-full border-collapse text-left text-sm;
+}
+
+.g360-markdown th,
+.g360-markdown td {
+  @apply border border-ink-200 px-2 py-1 dark:border-ink-700;
+}
