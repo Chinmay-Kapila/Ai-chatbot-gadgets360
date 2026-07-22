@@ -33,7 +33,13 @@ class Settings:
 
     # --- Gemini / LLM ---
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+    # NOTE: Google frequently deprecates/shuts down Gemini model versions
+    # (e.g. all Gemini 1.0/1.5 models return 404 as of mid-2026). Using the
+    # "-latest" alias means this stays valid without needing a code change
+    # every time a specific dated model is retired. Pin an explicit
+    # version (e.g. "gemini-2.5-flash") instead if you need reproducible
+    # behavior across model updates.
+    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
     GEMINI_API_BASE_URL: str = os.getenv(
         "GEMINI_API_BASE_URL",
         "https://generativelanguage.googleapis.com/v1beta",
@@ -58,6 +64,13 @@ class Settings:
     )
     UPSTREAM_API_KEY: str = os.getenv("UPSTREAM_API_KEY", "")
     UPSTREAM_REQUEST_TIMEOUT: float = float(os.getenv("UPSTREAM_REQUEST_TIMEOUT", "15"))
+
+    # Some upstream endpoints (e.g. the NDTV/Gadgets360 Reviews feed) embed
+    # the client key in the URL path itself. This is kept as a separate
+    # setting so it can ALSO be sent as a query param if a given deployment
+    # of the endpoint requires that instead of (or in addition to) the
+    # path-embedded form.
+    GADGETS360_REVIEWS_CLIENT_KEY: str = os.getenv("GADGETS360_REVIEWS_CLIENT_KEY", "")
 
     # --- Session ---
     SESSION_MAX_MESSAGES: int = int(os.getenv("SESSION_MAX_MESSAGES", "5"))

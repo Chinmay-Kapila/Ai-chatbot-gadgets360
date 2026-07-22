@@ -35,35 +35,22 @@ export function useChat() {
     setMessages((prev) => [...prev, message])
   }, [])
 
-  const send = useCallback(
-    async (text) => {
-      const trimmed = text.trim()
-      if (!trimmed || isSending) return
-
-      setError(null)
-      lastFailedMessageRef.current = null
-
-      const userMessage = {
-        id: makeId(),
-        role: 'user',
-        content: trimmed,
-        format: 'text',
-        product_cards: [],
-        article_cards: [],
-        related_links: [],
-        metadata: null,
-        rejected: false,
-        isError: false,
-      }
-
-      pushMessage(userMessage)
+  /**
+   * Performs the actual API call and appends the resulting assistant
+   * message (success or error). Does NOT touch the user-message side of
+   * the conversation — callers (send / retryLast) own that, so a retry
+   * never duplicates the original user bubble.
+   */
+  const performRequest = useCallback(
+    async (trimmed) => {
       setIsSending(true)
 
       try {
         const data = await sendMessageRequest(trimmed, sessionIdRef.current)
         sessionIdRef.current = data.session_id || sessionIdRef.current
+        lastFailedMessageRef.current = null
 
-        const assistantMessage = {
+        pushMessage({
           id: makeId(),
           role: 'assistant',
           content: data.answer,
@@ -74,9 +61,7 @@ export function useChat() {
           metadata: data.metadata || null,
           rejected: Boolean(data.rejected),
           isError: false,
-        }
-
-        pushMessage(assistantMessage)
+        })
       } catch (err) {
         lastFailedMessageRef.current = trimmed
         setError(err.message || 'Something went wrong. Please try again.')
@@ -98,15 +83,44 @@ export function useChat() {
         setIsSending(false)
       }
     },
-    [isSending, pushMessage]
+    [pushMessage]
+  )
+
+  const send = useCallback(
+    async (text) => {
+      const trimmed = text.trim()
+      if (!trimmed || isSending) return
+
+      setError(null)
+
+      pushMessage({
+        id: makeId(),
+        role: 'user',
+        content: trimmed,
+        format: 'text',
+        product_cards: [],
+        article_cards: [],
+        related_links: [],
+        metadata: null,
+        rejected: false,
+        isError: false,
+      })
+
+      await performRequest(trimmed)
+    },
+    [isSending, pushMessage, performRequest]
   )
 
   const retryLast = useCallback(() => {
     const lastFailed = lastFailedMessageRef.current
-    if (!lastFailed) return
+    if (!lastFailed || isSending) return
+
+    setError(null)
+    // Remove only the failed assistant bubble — the original user
+    // message stays exactly as it was, so retrying never duplicates it.
     setMessages((prev) => prev.filter((m) => !m.isError))
-    send(lastFailed)
-  }, [send])
+    performRequest(lastFailed)
+  }, [isSending, performRequest])
 
   const dismissError = useCallback(() => setError(null), [])
 

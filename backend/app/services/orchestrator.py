@@ -2,10 +2,18 @@
 API Orchestrator.
 
 Given a validated ParsedQuery, routes to the appropriate upstream API
-client(s) (Products, Reviews, News, Price, Search), applies the
-optimization rule (skip Gemini entirely for simple direct-lookup
-answers), and assembles the final ChatResponse including product/article
-cards, related links, and metadata.
+client(s) (Products, Reviews, News, Price, Search), runs results through
+the Ranking + Filtering + Deduplication stage (app.services.ranker) so
+only the most relevant top-k items are kept, and assembles the final
+ChatResponse including product/article cards, related links, and
+metadata.
+
+Pure single-fact lookups (a specific product's price, or a finance/
+commodity rate like gold/crypto/petrol) are answered directly from the
+API data and skip Gemini entirely, since there's no reasoning or
+summarization involved. Every other query — even ones the backend could
+technically answer from ranked data alone — always goes through the
+Gemini Response Generator for a natural-language, conversational answer.
 """
 
 from typing import Any, Dict, List, Optional, Tuple
@@ -25,6 +33,7 @@ from app.models.schemas import (
 from app.services.cache_service import get_cached_api_result, set_cached_api_result
 from app.services.gemini_service import GeminiService, GeminiServiceError
 from app.services.prompt_builder import build_api_context
+from app.services.ranker import rank_articles, rank_products
 from app.utils.helpers import format_currency, new_id, stable_hash
 from app.utils.logger import get_logger
 
@@ -82,32 +91,39 @@ class Orchestrator:
         # --- Route by intent to the right API(s) ---
         if parsed.intent == "recommendation":
             products = await self._get_products(parsed)
+            products = rank_products(products, parsed)
             source_apis.append("products")
             product_cards = self._to_product_cards(products)
 
         elif parsed.intent == "comparison":
             products = await self._get_comparison_products(parsed)
+            products = rank_products(products, parsed, top_k=max(len(parsed.compare_items or []), 2))
             source_apis.append("products")
             product_cards = self._to_product_cards(products)
 
         elif parsed.intent == "product_detail":
             products = await self._get_products(parsed, count=1)
+            products = rank_products(products, parsed, top_k=1)
             source_apis.append("products")
             product_cards = self._to_product_cards(products)
 
         elif parsed.intent == "review":
             reviews = await self._get_reviews(parsed)
+            reviews = rank_articles(reviews, parsed)
             source_apis.append("reviews")
             article_cards = self._to_article_cards(reviews)
 
         elif parsed.intent == "news":
             news = await self._get_news(parsed)
+            news = rank_articles(news, parsed)
             source_apis.append("news")
             article_cards = self._to_article_cards(news)
 
         elif parsed.intent == "buying_guide":
             products = await self._get_products(parsed)
             reviews = await self._get_reviews(parsed)
+            products = rank_products(products, parsed)
+            reviews = rank_articles(reviews, parsed)
             source_apis.extend(["products", "reviews"])
             product_cards = self._to_product_cards(products)
             article_cards = self._to_article_cards(reviews)
@@ -117,9 +133,11 @@ class Orchestrator:
 
         elif parsed.intent == "search":
             results = await self._get_search_results(parsed, user_message)
+            ranked_products = rank_products(results.get("products", []), parsed)
+            ranked_articles = rank_articles(results.get("articles", []), parsed)
             source_apis.append("search")
-            product_cards = self._to_product_cards(results.get("products", []))
-            article_cards = self._to_article_cards(results.get("articles", []))
+            product_cards = self._to_product_cards(ranked_products)
+            article_cards = self._to_article_cards(ranked_articles)
 
         else:
             # Should not normally happen since domain validation filters
@@ -142,20 +160,20 @@ class Orchestrator:
             ),
         )
 
-        # --- Optimization: skip Gemini when raw data is enough ---
-        if not parsed.needs_summary and parsed.intent not in ("comparison", "buying_guide"):
-            answer = self._format_direct_answer(parsed, product_cards, article_cards)
-            used_gemini = False
-        else:
-            answer = await self._generate_summary(user_message, parsed, api_data)
-            used_gemini = True
+        # Always generate a natural-language answer through Gemini for
+        # conversational UX, even when the ranked results alone would be
+        # enough to answer directly. (Pure single-fact lookups — product
+        # price, finance/commodity rates — are handled separately above
+        # and still skip Gemini, since those aren't reasoning/summarization
+        # tasks at all.)
+        answer = await self._generate_summary(user_message, parsed, api_data)
 
         return {
             "answer": answer,
             "product_cards": product_cards,
             "article_cards": article_cards,
             "related_links": related_links,
-            "used_gemini": used_gemini,
+            "used_gemini": True,
             "source_apis": source_apis,
         }
 
@@ -384,29 +402,6 @@ class Orchestrator:
             if a.url:
                 links.append(RelatedLink(title=a.title, url=a.url))
         return links[:8]
-
-    @staticmethod
-    def _format_direct_answer(
-        parsed: ParsedQuery,
-        product_cards: List[ProductCard],
-        article_cards: List[ArticleCard],
-    ) -> str:
-        """Format a direct answer from raw data without calling Gemini."""
-        if product_cards:
-            lines = [f"Here's what I found for **{parsed.entity or 'your search'}**:", ""]
-            for p in product_cards:
-                price_str = format_currency(p.price, p.currency) if p.price else "N/A"
-                rating_str = f" · ⭐ {p.rating}" if p.rating else ""
-                lines.append(f"- **{p.name}** — {price_str}{rating_str}")
-            return "\n".join(lines)
-
-        if article_cards:
-            lines = ["Here's what I found:", ""]
-            for a in article_cards:
-                lines.append(f"- **{a.title}**")
-            return "\n".join(lines)
-
-        return "I couldn't find any matching results right now."
 
     @staticmethod
     def _build_greeting_response() -> Dict[str, Any]:

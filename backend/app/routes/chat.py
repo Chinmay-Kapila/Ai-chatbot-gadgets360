@@ -86,7 +86,23 @@ async def chat(request: ChatRequest):
         )
 
     # --- Step 4: API Orchestrator (routing, optimization, response generation) ---
-    result = await orchestrator.handle_query(request.message, parsed, history)
+    try:
+        result = await orchestrator.handle_query(request.message, parsed, history)
+    except Exception as exc:  # noqa: BLE001
+        # IMPORTANT: this must be caught here, inside the route function.
+        # An exception that escapes all the way to Starlette's outermost
+        # ServerErrorMiddleware is sent WITHOUT CORS headers (that
+        # middleware sits OUTSIDE CORSMiddleware in the stack), which
+        # browsers then report to the frontend as a generic network
+        # error ("Can't reach the assistant right now") instead of the
+        # real 500 with a readable message. Converting to HTTPException
+        # here means FastAPI's ExceptionMiddleware (INSIDE CORSMiddleware)
+        # handles it, so the response still gets proper CORS headers.
+        logger.error("Orchestrator failed for session %s: %s", session_id, exc)
+        raise HTTPException(
+            status_code=500,
+            detail="I ran into a problem fetching that information. Please try again.",
+        ) from exc
 
     # --- Step 5: Update session history (last 5 messages only) ---
     await session_service.append_message(session_id, "user", request.message)

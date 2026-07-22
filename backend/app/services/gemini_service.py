@@ -86,9 +86,6 @@ class GeminiService(LLMService):
         try:
             raw_text = await self._call_gemini(prompt, temperature=0.0)
             parsed_json = safe_json_loads(raw_text)
-            print("\n========PARSED QUERY ===================")
-            print(parsed_json)
-            print("=====================\n")
             return ParsedQuery(**parsed_json)
         except GeminiServiceError:
             raise
