@@ -1,83 +1,86 @@
 """
 Prompt template for the Response Generator.
 
-This prompt forces Gemini to build its answer STRICTLY from the API data
-provided in context. It must never hallucinate facts, prices, specs, or
-links, and it must never generate product/article cards or URLs itself —
-those are always attached separately by the backend from raw API data.
+This prompt forces Gemini to build its answer STRICTLY from the compact
+product/review/news TEXT context assembled by app.services.prompt_builder
+(app.services.ranker already ranked, deduplicated, and trimmed this data
+before it got here). Gemini never sees a raw API payload and never
+generates product/article cards, images, prices, ratings, links, or
+specs itself — all of that comes directly from the Products/Reviews/News
+API data and is attached to the response separately by the orchestrator.
 
-The data passed in has already been through the Ranking + Filtering +
-Deduplication stage (app.services.ranker), so it is already the small,
-relevant set of results — never a full unfiltered API payload. This
-prompt tells Gemini to treat that as a closed world: everything in
-context is relevant by construction, and nothing outside it exists.
+Gemini's only job is the reasoning layer on top of that data:
+recommendation, comparison, summary, explanation, pros/cons, and buying
+advice — in natural language.
 """
 
-import json
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 
-RESPONSE_SYSTEM_INSTRUCTION = """You are the Gadgets360 AI Assistant response writer.
+RESPONSE_SYSTEM_INSTRUCTION = """You are the Gadgets360 AI Assistant.
 
-You will be given:
-1. The user's question.
-2. Structured data retrieved from Gadgets360 APIs (products, reviews,
-   news, prices, or search results), already filtered down to only the
-   results relevant to this question.
+Answer ONLY using the provided API results.
 
-Your job is to write a concise, helpful, accurate answer using ONLY the
-information present in the provided API data.
+Rules:
+- Never invent products, prices, ratings or specifications.
+- Never mention products that are not present in the provided data.
+- Do not recreate product cards, specification tables or raw API listings.
+- Explain recommendations naturally.
+- If multiple products exist, compare them briefly.
+- If only one relevant product exists, explain that product only.
+- If the available data is insufficient, clearly say so instead of guessing.
+- Keep the response concise, helpful and in Markdown.
 
-Strict rules:
-- NEVER invent facts, prices, specifications, ratings, or links that are
-  not present in the provided data.
-- Treat the provided data as the complete, closed set of relevant
-  results. Never discuss, mention, or compare against any product or
-  article that is not present in the provided data, even if you know of
-  one from general knowledge — it was deliberately excluded as
-  irrelevant to this question.
-- Never mix unrelated items together. If the data contains a review for
-  one specific product, answer about that product only — do not pad the
-  answer with other unrelated items just to say more.
-- If only one result is present in the data, treat that as the single
-  correct answer and write your entire response based on it alone. Do
-  not apologize for there being "only one" result — just answer from it
-  directly and naturally.
-- If the data does not contain enough information to answer fully, say so
-  honestly rather than guessing.
-- Do NOT generate product cards, article cards, or hyperlinks yourself —
-  the backend attaches those separately from the raw API data. Just write
-  the narrative answer.
-- Write in clean markdown: use short paragraphs, bullet points, and bold
-  text for key figures where helpful.
-- Keep the tone helpful, neutral, and factual — like a knowledgeable tech
-  editor, not a salesperson.
-- Do not answer anything outside the scope of the provided data.
-- Do not mention that you are an AI, and do not mention "the JSON" or
-  "the API" explicitly to the user — just present the information naturally.
+User Question:
+{user_query}
+
+API Results:
+{context}
+
+Write the final response.
 """
 
 
 def build_response_prompt(
     user_message: str,
     parsed_query: Dict[str, Any],
-    api_data: Dict[str, Any],
+    api_data: Dict[str, str],
 ) -> str:
-    """Build the final response-generation prompt from structured API data."""
+    """
+    Build the final response-generation prompt from the compact text
+    context produced by app.services.prompt_builder.build_api_context().
+    """
 
-    # Compact JSON (no indentation, no spaces after separators) instead of
-    # pretty-printed output: pretty-printing adds a meaningful number of
-    # whitespace/newline tokens per call with no benefit to the model,
-    # and this data is embedded on every single response-generation call.
-    data_block = json.dumps(api_data, separators=(",", ":"), default=str)
-    query_block = json.dumps(parsed_query, separators=(",", ":"), default=str)
+    # A short, compact summary line instead of a JSON dump of the parsed
+    # query — Gemini only needs the intent/entity/constraints to reason
+    # about tone and framing, not the full structured object.
+    intent = parsed_query.get("intent", "unknown")
+    entity = parsed_query.get("entity", "none")
+    constraints = []
+    if parsed_query.get("budget"):
+        constraints.append(f"budget ₹{parsed_query['budget']:,.0f}")
+    if parsed_query.get("brand"):
+        constraints.append(f"brand: {parsed_query['brand']}")
+    if parsed_query.get("priority"):
+        constraints.append(f"priority: {parsed_query['priority']}")
+    constraints_line = f" ({', '.join(constraints)})" if constraints else ""
+    query_summary = f"Intent: {intent} | Entity: {entity}{constraints_line}"
 
-    return (
-        f"{RESPONSE_SYSTEM_INSTRUCTION}\n\n"
-        f"User question:\n{user_message}\n\n"
-        f"Parsed query intent:\n{query_block}\n\n"
-        f"Retrieved API data — already filtered to only relevant results, "
-        f"and the ONLY source of truth for your answer:\n"
-        f"{data_block}\n\n"
-        f"Now write the final markdown answer for the user."
-    )
+    sections = [
+        RESPONSE_SYSTEM_INSTRUCTION,
+        f"User question:\n{user_message}",
+        f"Parsed query summary:\n{query_summary}",
+    ]
+
+    if api_data.get("products_context"):
+        sections.append(f"Products (already ranked, most relevant first):\n{api_data['products_context']}")
+
+    if api_data.get("reviews_context"):
+        sections.append(f"Reviews (already ranked, most relevant first):\n{api_data['reviews_context']}")
+
+    if api_data.get("news_context"):
+        sections.append(f"News (already ranked, most relevant first):\n{api_data['news_context']}")
+
+    sections.append("Now write the final markdown answer for the user.")
+
+    return "\n\n".join(sections)

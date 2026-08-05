@@ -2,11 +2,17 @@
 API Orchestrator.
 
 Given a validated ParsedQuery, routes to the appropriate upstream API
-client(s) (Products, Reviews, News, Price, Search), runs results through
-the Ranking + Filtering + Deduplication stage (app.services.ranker) so
-only the most relevant top-k items are kept, and assembles the final
-ChatResponse including product/article cards, related links, and
-metadata.
+client(s) (Products via the Pricee Search/Detailed Product List APIs,
+Reviews, News, Price, Search), runs results through the Ranking +
+Filtering + Deduplication stage (app.services.ranker) so only the most
+relevant top-k items are kept, and assembles the final ChatResponse
+including product/article cards, related links, and metadata.
+
+Product cards are built ENTIRELY from the normalized Pricee API data
+(images, prices, ratings, specs, review links, discounts, store names,
+availability) — Gemini never generates any part of a product or article
+card. Gemini only ever writes the reasoning/narrative answer, using the
+compact text context built by app.services.prompt_builder.
 
 Pure single-fact lookups (a specific product's price, or a finance/
 commodity rate like gold/crypto/petrol) are answered directly from the
@@ -182,13 +188,25 @@ class Orchestrator:
     # ------------------------------------------------------------------
 
     async def _get_products(self, parsed: ParsedQuery, count: Optional[int] = None) -> List[Dict[str, Any]]:
+        # 1. Safely extract the dictionary
+        parsed_dict = parsed.model_dump() if hasattr(parsed, "model_dump") else dict(parsed)
+        
+        # 2. Extract entity/category
+        target_entity = getattr(parsed, "entity", None) or parsed_dict.get("category") or parsed_dict.get("entity")
+        
+        # --- NEW LOGS ---
+        logger.info(f"[ORCHESTRATOR] Raw Gemini Parsed Dict: {parsed_dict}")
+        logger.info(f"[ORCHESTRATOR] Extracted target_entity for API: '{target_entity}'")
+        # ----------------
+        
         cache_key = stable_hash(
             {
                 "op": "products",
-                "entity": parsed.entity,
+                "entity": target_entity,
                 "budget": parsed.budget,
                 "priority": parsed.priority,
                 "brand": parsed.brand,
+                "keywords": parsed.keywords,
                 "count": count or parsed.count,
             }
         )
@@ -197,30 +215,35 @@ class Orchestrator:
             return cached
 
         products = await self.products_client.search_products(
-            entity=parsed.entity,
+            entity=target_entity,
             budget=parsed.budget,
             priority=parsed.priority,
             brand=parsed.brand,
             count=count or parsed.count or 5,
+            keywords=parsed.keywords,
+            query_text=parsed.query_text,
         )
         await set_cached_api_result(cache_key, products)
-        return products
-
+        return products 
     async def _get_comparison_products(self, parsed: ParsedQuery) -> List[Dict[str, Any]]:
         if parsed.compare_items:
-            all_products = await self.products_client.search_products(
-                entity=parsed.entity, count=20
-            )
-            name_matches = []
+            matches: List[Dict[str, Any]] = []
+            seen_ids = set()
+
             for item_name in parsed.compare_items:
-                match = next(
-                    (p for p in all_products if item_name.lower() in p["name"].lower()),
-                    None,
+                item_results = await self.products_client.search_products(
+                    entity=parsed.entity, keywords=[item_name], count=3
                 )
-                if match:
-                    name_matches.append(match)
-            if name_matches:
-                return name_matches
+                best = next(
+                    (p for p in item_results if item_name.lower() in p.get("name", "").lower()),
+                    item_results[0] if item_results else None,
+                )
+                if best and best.get("id") not in seen_ids:
+                    matches.append(best)
+                    seen_ids.add(best.get("id"))
+
+            if matches:
+                return matches
 
         return await self._get_products(parsed, count=max(parsed.count or 2, 2))
 
@@ -316,7 +339,8 @@ class Orchestrator:
         product = products[0]
         price = product.get("price")
         currency = product.get("currency", "INR")
-        answer = f"**{product['name']}** is priced at {format_currency(price, currency)}."
+        discount_note = f" ({product['discount']} off)" if product.get("discount") else ""
+        answer = f"**{product['name']}** is priced at {format_currency(price, currency)}{discount_note}."
 
         card = self._to_product_cards([product])
 
@@ -369,6 +393,10 @@ class Orchestrator:
                     image_url=p.get("image_url"),
                     url=p.get("url"),
                     key_specs=p.get("key_specs", {}),
+                    review_url=p.get("review_url"),
+                    discount=p.get("discount"),
+                    availability=p.get("availability"),
+                    store_name=p.get("store_name"),
                 )
             )
         return cards

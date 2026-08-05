@@ -8,12 +8,15 @@ variables via python-dotenv. Nothing sensitive is ever hardcoded here.
 import os
 from functools import lru_cache
 from typing import List
-
+from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
-
-
+# Calculate the absolute path to the root 'backend' directory
+# settings.py is inside backend/app/config/ -> go up 3 levels
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+ENV_PATH = BASE_DIR / ".env"
+load_dotenv(dotenv_path=ENV_PATH)
 class Settings:
     """Central application settings, populated from environment variables."""
 
@@ -33,23 +36,30 @@ class Settings:
 
     # --- Gemini / LLM ---
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-    # NOTE: Google frequently deprecates/shuts down Gemini model versions
-    # (e.g. all Gemini 1.0/1.5 models return 404 as of mid-2026). Using the
-    # "-latest" alias means this stays valid without needing a code change
-    # every time a specific dated model is retired. Pin an explicit
-    # version (e.g. "gemini-2.5-flash") instead if you need reproducible
-    # behavior across model updates.
-    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
-    GEMINI_API_BASE_URL: str = os.getenv(
-        "GEMINI_API_BASE_URL",
-        "https://generativelanguage.googleapis.com/v1beta",
-    )
+    GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.5-flash-lite")
     GEMINI_REQUEST_TIMEOUT: float = float(os.getenv("GEMINI_REQUEST_TIMEOUT", "30"))
 
     # --- Gadgets360 upstream APIs ---
     GADGETS360_PRODUCTS_API_BASE: str = os.getenv(
         "GADGETS360_PRODUCTS_API_BASE", "https://api.gadgets360.com/products"
     )
+
+    # --- Pricee Product APIs (real product data source) ---
+    # Search API: lightweight, keyword-driven results (title, brand,
+    # price, image, url, stock).
+    # Product List API: richer, filterable results with rating,
+    # key_specs, review_url, discount, and per-store pricing. Used as the
+    # primary source for recommendation / comparison / product_detail /
+    # buying_guide intents; the Search API is used as a fallback when the
+    # detailed endpoint returns nothing for a given query.
+    PRICEE_SEARCH_API_BASE: str = os.getenv(
+        "PRICEE_SEARCH_API_BASE", "https://pricee.com/api/v1/search.php"
+    )
+    PRICEE_PRODUCT_LIST_API_BASE: str = os.getenv(
+        "PRICEE_PRODUCT_LIST_API_BASE", "https://pricee.com/api/v2/productList.php"
+    )
+    PRICEE_API_KEY: str = os.getenv("PRICEE_API_KEY", "")
+
     GADGETS360_REVIEWS_API_BASE: str = os.getenv(
         "GADGETS360_REVIEWS_API_BASE", "https://api.gadgets360.com/reviews"
     )

@@ -205,7 +205,6 @@ def _score_product(product: Dict[str, Any], parsed: ParsedQuery, query_tokens: L
     score += 1.5 * _exact_phrase_boost(parsed.query_text, name)
     score += 1.0 * _fuzzy_score(" ".join(query_tokens), name)
 
-    # Named comparison items (comparison intent) get a strong boost.
     for item_name in parsed.compare_items or []:
         if not item_name:
             continue
@@ -213,9 +212,9 @@ def _score_product(product: Dict[str, Any], parsed: ParsedQuery, query_tokens: L
             score += 2.5
         else:
             score += 0.5 * _fuzzy_score(item_name, name)
-
     # Entity match (phone/laptop/tablet/...).
-    if parsed.entity and parsed.entity != "none" and parsed.entity == entity:
+    parsed_e = _normalize_entity(parsed.entity)
+    if parsed_e and parsed_e != "none" and parsed_e == _normalize_entity(entity):
         score += 1.0
 
     # Brand match.
@@ -235,37 +234,100 @@ def _score_product(product: Dict[str, Any], parsed: ParsedQuery, query_tokens: L
         if priority_tokens and _keyword_overlap_score(priority_tokens, specs_text) > 0:
             score += 0.75
 
-    # Rating as a small continuous tiebreaker.
+    # Rating as a small continuous tiebreaker. Ratings may come in on a
+    # 0-5 scale (existing sample data) or a 0-10 scale (Pricee); anything
+    # above 5 is treated as out-of-10 and normalized down to out-of-5 so
+    # both scales contribute comparably to the score.
     rating = product.get("rating")
     if rating:
         try:
-            score += min(float(rating), 5.0) / 10.0
+            rating_value = float(rating)
+            if rating_value > 5:
+                rating_value = rating_value / 2.0
+            score += min(rating_value, 5.0) / 10.0
         except (TypeError, ValueError):
             pass
 
+    # Availability: favor in-stock items, penalize known out-of-stock
+    # items so they don't get recommended to someone who can't buy them.
+    # Unknown availability (field absent) is treated neutrally.
+    availability = (product.get("availability") or "").lower()
+    if availability == "in stock":
+        score += 0.3
+    elif availability == "out of stock":
+        score -= 1.5
+
+    # Discount: a small boost proportional to how large the discount is,
+    # so better deals rank slightly higher among otherwise-similar items.
+    discount_pct = _parse_discount_percent(product.get("discount"))
+    if discount_pct is not None:
+        score += min(discount_pct, 50.0) / 100.0
+
+    # Popularity: only applied if the upstream data actually provides a
+    # popularity-style signal (e.g. a sales rank or review count). Silently
+    # skipped otherwise rather than inventing a fake signal.
+    popularity = product.get("popularity") or product.get("reviews_count")
+    if popularity:
+        try:
+            score += min(float(popularity), 1000.0) / 1000.0
+        except (TypeError, ValueError):
+            pass
+
+    # Brand quality: a small penalty for missing or explicitly "generic"
+    # brand data. Pricee's marketplace listings include a lot of
+    # unbranded/generic/refurbished items mixed in with proper branded
+    # products; this doesn't exclude them (they might occasionally be a
+    # legitimate answer), but keeps them from outranking clearly-branded,
+    # more identifiable products when scores are otherwise close.
+    if not brand or brand.lower() == "generic":
+        score -= 0.5
+
     return score
+
+
+def _parse_discount_percent(discount: Any) -> Optional[float]:
+    """Parse a discount value like '15', '15%', or '15% OFF' into a float percent."""
+    if discount is None:
+        return None
+    match = re.search(r"[\d.]+", str(discount))
+    if not match:
+        return None
+    try:
+        return float(match.group())
+    except ValueError:
+        return None
+
+
+def _normalize_entity(entity_str: Optional[str]) -> str:
+    """Normalize common synonyms down to a single canonical entity string."""
+    if not entity_str:
+        return ""
+    e = entity_str.lower().strip()
+    synonyms = {
+        "mobile": "phone", "mobiles": "phone", "smartphone": "phone", "smartphones": "phone",
+        "notebook": "laptop", "notebooks": "laptop", "ipad": "tablet",
+        "television": "tv", "tvs": "tv", "watch": "smartwatch", "watches": "smartwatch"
+    }
+    return synonyms.get(e, e)
 
 
 def _filter_by_entity(products: List[Dict[str, Any]], parsed: ParsedQuery) -> List[Dict[str, Any]]:
     """
     Hard-exclude candidates whose entity/category clearly doesn't match
     the parsed query's entity (e.g. a laptop showing up in a phone
-    recommendation). Upstream clients already filter by entity, but this
-    makes "remove unrelated products" a guarantee of the ranking stage
-    itself, not just something we hope the API did correctly. Items with
-    no entity/category info at all are kept (can't judge them), and if
-    filtering would remove everything, the original list is returned
-    unchanged rather than producing an empty result.
+    recommendation).
     """
     if not parsed.entity or parsed.entity == "none":
         return products
 
-    filtered = [
+    parsed_e = _normalize_entity(parsed.entity)
+
+    return [
         p for p in products
         if not (p.get("entity") or p.get("category"))
-        or (p.get("entity") or p.get("category") or "").lower() == parsed.entity
+        or _normalize_entity(p.get("entity")) == parsed_e
+        or parsed_e in (p.get("category") or "").lower()
     ]
-    return filtered if filtered else products
 
 
 def rank_products(

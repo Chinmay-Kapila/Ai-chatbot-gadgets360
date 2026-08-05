@@ -32,7 +32,13 @@ class ChatRequest(BaseModel):
 
 
 class ProductCard(BaseModel):
-    """Structured product card rendered by the frontend."""
+    """
+    Structured product card rendered by the frontend. Every field here is
+    populated directly from the Products API data (Pricee Search API /
+    Detailed Product List API) by the normalizer in
+    app.api_clients.products_client — Gemini never generates any part of
+    this card.
+    """
 
     id: str
     name: str
@@ -43,6 +49,10 @@ class ProductCard(BaseModel):
     image_url: Optional[str] = None
     url: Optional[str] = None
     key_specs: Dict[str, Any] = Field(default_factory=dict)
+    review_url: Optional[str] = None
+    discount: Optional[str] = None
+    availability: Optional[str] = None
+    store_name: Optional[str] = None
 
 
 class ArticleCard(BaseModel):
@@ -103,13 +113,13 @@ class RejectedResponse(BaseModel):
 # LLM Parser structured output
 # ---------------------------------------------------------------------------
 
+from typing import Any, Dict, List, Optional
+from pydantic import BaseModel, Field, model_validator
+
 class ParsedQuery(BaseModel):
     """
     Strict structured output expected from the LLM Query Parser.
-    The parser must ONLY ever return JSON matching this schema — it must
-    never generate a natural-language answer to the user.
     """
-
     intent: str
     entity: str = "none"
     query_text: str = ""
@@ -123,6 +133,22 @@ class ParsedQuery(BaseModel):
     in_scope: bool = True
     rejection_reason: Optional[str] = None
 
+    @model_validator(mode="before")
+    @classmethod
+    def map_rogue_llm_keys(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            # Map Gemini's 'category' to our 'entity'
+            if "category" in data and not data.get("entity"):
+                data["entity"] = data["category"]
+            
+            # Map Gemini's 'price_max' to our 'budget'
+            if "price_max" in data and not data.get("budget"):
+                data["budget"] = data["price_max"]
+                
+            # Map Gemini's 'search_query' to our 'query_text'
+            if "search_query" in data and not data.get("query_text"):
+                data["query_text"] = data["search_query"] or ""
+        return data
 
 # ---------------------------------------------------------------------------
 # Session

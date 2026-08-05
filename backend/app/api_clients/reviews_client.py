@@ -51,54 +51,6 @@ from app.utils.logger import get_logger
 logger = get_logger(__name__)
 
 
-# Local fallback dataset, used only if the upstream feed is unreachable.
-# Already in the INTERNAL schema (id, title, summary, published_at,
-# image_url, url, category) so it can be returned as-is.
-_SAMPLE_REVIEWS: List[Dict[str, Any]] = [
-    {
-        "id": "review-001",
-        "title": "Orion S12 Pro Review: Flagship Killer at Its Price?",
-        "summary": (
-            "The Orion S12 Pro impresses with a sharp AMOLED display and "
-            "capable cameras, though battery life under heavy use is average."
-        ),
-        "product_id": "phone-002",
-        "rating": 4.5,
-        "published_at": "2026-05-12",
-        "image_url": "https://static.gadgets360.com/sample/orion-s12-pro-review.jpg",
-        "url": "https://www.gadgets360.com/orion-s12-pro-review",
-        "category": "review",
-    },
-    {
-        "id": "review-002",
-        "title": "Nova X50 5G Review: Budget Value Champion",
-        "summary": (
-            "Solid all-round performer for its price segment, with dependable "
-            "battery life and a smooth 120Hz display."
-        ),
-        "product_id": "phone-001",
-        "rating": 4.3,
-        "published_at": "2026-04-02",
-        "image_url": "https://static.gadgets360.com/sample/nova-x50-review.jpg",
-        "url": "https://www.gadgets360.com/nova-x50-review",
-        "category": "review",
-    },
-    {
-        "id": "review-003",
-        "title": "AeroBook 14 Slim Review: Portable Productivity",
-        "summary": (
-            "A lightweight laptop with strong battery life, ideal for "
-            "everyday productivity, though graphics performance is modest."
-        ),
-        "product_id": "laptop-001",
-        "rating": 4.4,
-        "published_at": "2026-03-18",
-        "image_url": "https://static.gadgets360.com/sample/aerobook-14-review.jpg",
-        "url": "https://www.gadgets360.com/aerobook-14-review",
-        "category": "review",
-    },
-]
-
 # Maps our internal entity vocabulary to the upstream feed's category
 # slugs. Entities with no sensible review category (finance/commodity
 # entities, "ai", "technology", "gadget", "none") are omitted, which
@@ -127,8 +79,13 @@ class ReviewsClient(BaseAPIClient):
     ) -> List[Dict[str, Any]]:
         """
         Fetch reviews matching the given filters, normalized into the
-        internal schema. Falls back to a local sample dataset if the
-        upstream feed is unreachable.
+        internal schema.
+
+        Raises UpstreamAPIError if the upstream feed genuinely can't be
+        reached (network/HTTP failure) — callers must not silently
+        substitute fake data for a real API failure. A successful call
+        that legitimately has zero matching reviews is NOT an error and
+        returns an empty list.
         """
         # Fetch a larger pool than requested, since the upstream feed has
         # no free-text search — we filter/rank by keyword locally below.
@@ -151,34 +108,31 @@ class ReviewsClient(BaseAPIClient):
         if category_slug:
             params["categories"] = category_slug
 
-        if settings.GADGETS360_REVIEWS_CLIENT_KEY:
-            # Harmless no-op if the endpoint only reads the client key
-            # from the URL path; some deployments also expect it as a
-            # query param.
-            params["client_key"] = settings.GADGETS360_REVIEWS_CLIENT_KEY
+        data = await self.get("", params=params)
+        raw_results = data.get("results") or []
 
-        try:
-            data = await self.get("", params=params)
+        # A category-slug guess that happens to return nothing (wrong
+        # slug, too-narrow filter, etc.) shouldn't be treated the same
+        # as a genuinely empty feed — retry once without the filter
+        # before giving up on real data.
+        if not raw_results and category_slug:
+            logger.info(
+                "No results for categories=%s, retrying without category filter.",
+                category_slug,
+            )
+            broadened_params = {k: v for k, v in params.items() if k != "categories"}
+            data = await self.get("", params=broadened_params)
             raw_results = data.get("results") or []
 
-            # A category-slug guess that happens to return nothing (wrong
-            # slug, too-narrow filter, etc.) shouldn't be treated the same
-            # as a genuinely empty feed — retry once without the filter
-            # before giving up on real data.
-            if not raw_results and category_slug:
-                logger.info(
-                    "No results for categories=%s, retrying without category filter.",
-                    category_slug,
-                )
-                broadened_params = {k: v for k, v in params.items() if k != "categories"}
-                data = await self.get("", params=broadened_params)
-                raw_results = data.get("results") or []
-
-            normalized = self._normalize_all(raw_results)
+        normalized = self._normalize_all(raw_results)
+        if normalized:
             logger.info("Fetched %d real review(s) from upstream feed.", len(normalized))
-        except UpstreamAPIError as exc:
-            logger.warning("Reviews upstream call failed (%s), falling back to local sample review dataset.", exc)
-            normalized = list(_SAMPLE_REVIEWS)
+        else:
+            logger.warning(
+                "Reviews feed returned 0 usable items for params=%s. "
+                "Raw response keys=%s, total=%s",
+                params, list(data.keys()), data.get("total"),
+            )
 
         if product_id:
             normalized = [r for r in normalized if r.get("product_id") == product_id]
