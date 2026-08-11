@@ -114,42 +114,114 @@ class RejectedResponse(BaseModel):
 # ---------------------------------------------------------------------------
 
 from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, field_validator
 
 class ParsedQuery(BaseModel):
-    """
-    Strict structured output expected from the LLM Query Parser.
-    """
     intent: str
-    entity: str = "none"
-    query_text: str = ""
-    keywords: List[str] = Field(default_factory=list)
+    entity: Optional[str] = None
+    category: Optional[str] = None
+    brand: Optional[str] = None
+    product_name: Optional[str] = None
+    
+    # --- ADD THESE NEW FIELDS ---
+    price_min: Optional[float] = None
+    price_max: Optional[float] = None
+    ram: Optional[str] = None
+    storage: Optional[str] = None
+    reviews: bool = False
+    news: bool = False
+    # ----------------------------
+
+    keywords: Optional[List[str]] = None
+    query_text: Optional[str] = None
     budget: Optional[float] = None
     priority: Optional[str] = None
-    count: Optional[int] = Field(default=5, ge=1, le=20)
-    brand: Optional[str] = None
-    compare_items: List[str] = Field(default_factory=list)
+    count: Optional[int] = None
+    compare_items: Optional[List[str]] = None
     needs_summary: bool = True
-    in_scope: bool = True
+    in_scope: bool = True 
     rejection_reason: Optional[str] = None
+    @field_validator("intent", mode="before")
+    @classmethod
+    def normalize_intent(cls, v: Any) -> str:
+        """Normalizes variations of intent strings to match orchestrator routes."""
+        if not v:
+            return "search"
+        v_clean = str(v).strip().lower()
+        
+        intent_map = {
+            "get_reviews": "review",
+            "get_review": "review",
+            "search_reviews": "review",
+            "reviews": "review",
+            "recommendations": "recommendation",
+            "get_news": "news",
+            "compare": "comparison",  
+            "comparisons": "comparison",
+        }
+        return intent_map.get(v_clean, v_clean)
 
     @model_validator(mode="before")
     @classmethod
-    def map_rogue_llm_keys(cls, data: Any) -> Any:
-        if isinstance(data, dict):
-            # Map Gemini's 'category' to our 'entity'
-            if "category" in data and not data.get("entity"):
-                data["entity"] = data["category"]
-            
-            # Map Gemini's 'price_max' to our 'budget'
-            if "price_max" in data and not data.get("budget"):
-                data["budget"] = data["price_max"]
-                
-            # Map Gemini's 'search_query' to our 'query_text'
-            if "search_query" in data and not data.get("query_text"):
-                data["query_text"] = data["search_query"] or ""
-        return data
+    def transform_raw_dict(cls, data: Any) -> Any:
+        """
+        Runs before fields are validated. Maps legacy field synonyms
+        and handles comparison items extraction.
+        """
+        if not isinstance(data, dict):
+            return data
 
+        # 1. Map intent synonyms
+        intent_map = {
+            "get_reviews": "review",
+            "get_review": "review",
+            "search_reviews": "review",
+            "compare": "comparison",
+            "comparisons": "comparison",
+            "recommendations": "recommendation",
+            "get_news": "news",
+        }
+        if "intent" in data and data["intent"] in intent_map:
+            data["intent"] = intent_map[data["intent"]]
+
+        # 2. Map Gemini's "category" field to "entity" if "entity" is missing
+        if "category" in data and not data.get("entity"):
+            data["entity"] = data["category"]
+
+        # 3. Map Gemini's 'search_query' to 'query_text' if missing
+        if data.get("search_query") and not data.get("query_text"):
+            data["query_text"] = data["search_query"]
+
+        # 4. Map Gemini's 'price_max' to 'budget'
+        if data.get("price_max") is not None and not data.get("budget"):
+            data["budget"] = float(data["price_max"])
+
+        # 5. Extract compare_items if missing for comparison intent
+        if data.get("intent") == "comparison" and not data.get("compare_items"):
+            q_text = data.get("query_text") or data.get("search_query") or data.get("product_name") or ""
+            if q_text:
+                # Split common comparison separators
+                for sep in [" vs ", " vs. ", " compare with ", " with ", " and "]:
+                    if sep in q_text.lower():
+                        parts = [p.strip() for p in q_text.lower().split(sep) if p.strip()]
+                        if len(parts) >= 2:
+                            data["compare_items"] = parts
+                            break
+
+        # 6. Handle multi-brand arrays
+        brand_val = data.get("brand")
+        if isinstance(brand_val, list) and len(brand_val) > 0:
+            data["brand"] = str(brand_val[0])
+            existing_keywords = data.get("keywords") or []
+            if not isinstance(existing_keywords, list):
+                existing_keywords = [str(existing_keywords)]
+            for b in brand_val:
+                b_str = str(b)
+                if b_str not in existing_keywords:
+                    existing_keywords.append(b_str)
+            data["keywords"] = existing_keywords
+
+        return data
 # ---------------------------------------------------------------------------
 # Session
 # ---------------------------------------------------------------------------

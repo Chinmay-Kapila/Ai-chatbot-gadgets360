@@ -33,28 +33,23 @@ def fallback_parse_query(user_message: str) -> ParsedQuery:
     """
     msg = user_message.lower()
 
-    # Budget extraction (e.g., "under 40,000", "below 30k", "under 40000")
-    budget: Optional[float] = None
-    budget_match = re.search(r'(?:under|below|around|less than|\<)\s*₹?\s*(\d+[\d,]*|\d+k)', msg)
-    if budget_match:
-        val_str = budget_match.group(1).replace(',', '').lower()
-        if 'k' in val_str:
-            budget = float(val_str.replace('k', '')) * 1000
-        else:
-            budget = float(val_str)
+   
 
-    # Entity extraction
     entity = "none"
-    if any(w in msg for w in ["phone", "mobile", "smartphone"]):
-        entity = "phone"
-    elif any(w in msg for w in ["laptop", "macbook", "notebook"]):
-        entity = "laptop"
-    elif any(w in msg for w in ["tablet", "ipad"]):
-        entity = "tablet"
-    elif any(w in msg for w in ["watch", "smartwatch"]):
-        entity = "smartwatch"
-    elif any(w in msg for w in ["tv", "television"]):
-        entity = "tv"
+    intent = "search"
+
+   
+    if entity == "none":
+        if any(w in msg for w in ["phone", "mobile", "smartphone"]):
+            entity = "phone"
+        elif any(w in msg for w in ["laptop", "macbook", "notebook"]):
+            entity = "laptop"
+        elif any(w in msg for w in ["tablet", "ipad"]):
+            entity = "tablet"
+        elif any(w in msg for w in ["watch", "smartwatch"]):
+            entity = "smartwatch"
+        elif any(w in msg for w in ["tv", "television"]):
+            entity = "tv"
 
     # Priority extraction
     priority: Optional[str] = None
@@ -65,8 +60,6 @@ def fallback_parse_query(user_message: str) -> ParsedQuery:
     elif any(w in msg for w in ["battery", "charging", "backup"]):
         priority = "battery"
 
-    # Intent extraction
-    intent = "search"
     if any(w in msg for w in ["best", "top", "recommend", "suggest", "under", "which"]):
         intent = "recommendation"
     elif "vs" in msg or "compare" in msg:
@@ -76,22 +69,27 @@ def fallback_parse_query(user_message: str) -> ParsedQuery:
     elif "news" in msg:
         intent = "news"
 
-    keywords = [word for word in re.findall(r'\b\w+\b', msg) if len(word) > 2]
+    # Budget extraction
+    budget: Optional[float] = None
+    budget_match = re.search(r'(?:under|below|around|less than|\<)\s*₹?\s*(\d+[\d,]*|\d+k)', msg)
+    if budget_match:
+        val_str = budget_match.group(1).replace(',', '').lower()
+        if 'k' in val_str:
+            budget = float(val_str.replace('k', '')) * 1000
+        else:
+            budget = float(val_str)
 
-    logger.info(
-        "[FALLBACK PARSER] Parsed query locally without Gemini -> intent=%s, entity=%s, budget=%s, priority=%s",
-        intent, entity, budget, priority
-    )
+    keywords = [word for word in re.findall(r'\b\w+\b', msg) if len(word) > 2]
 
     return ParsedQuery(
         intent=intent,
         entity=entity,
+        category=entity,
         budget=budget,
         priority=priority,
         keywords=keywords,
         needs_summary=True,
     )
-
 
 class GeminiServiceError(Exception):
     """Raised when the Gemini API call fails or returns unusable output."""
@@ -207,12 +205,21 @@ class GeminiService(LLMService):
             raise GeminiServiceError("Gemini API returned an unexpected response shape") from exc
 
     async def parse_query(self, user_message: str, history: List[Dict[str, Any]]) -> ParsedQuery:
-        """Parse the user message into a structured ParsedQuery via Gemini, with local fallback."""
+    #"""Parse the user message into a structured ParsedQuery via Gemini, with local fallback."""
         prompt = build_parser_prompt(user_message, history)
         print(">>>> PARSE_QUERY CALLED <<<<")
         try:
             raw_text = await self._call_gemini(prompt, temperature=0.0)
-            parsed_json = safe_json_loads(raw_text)
+
+            # Strip triple backticks/markdown fences before parsing JSON
+            clean_text = raw_text.strip()
+            if clean_text.startswith("```"):
+                clean_text = clean_text.split("\n", 1)[-1]
+            if clean_text.endswith("```"):
+                clean_text = clean_text.rsplit("```", 1)[0]
+            clean_text = clean_text.strip()
+
+            parsed_json = safe_json_loads(clean_text)
             return ParsedQuery(**parsed_json)
         except GeminiServiceError as exc:
             logger.warning("[PARSER FALLBACK] Gemini parse failed (%s). Using local heuristic parser.", exc)

@@ -44,7 +44,7 @@ function InputBox({ onSend, disabled }) {
         onKeyDown={handleKeyDown}
         disabled={disabled}
         rows={1}
-        placeholder="Ask about phones, laptops, tech news, crypto rates…"
+        placeholder="Ask about phones, laptops, tech news…"
         aria-label="Message the Gadgets360 AI Assistant"
         className="max-h-24 flex-1 resize-none rounded-xl border border-ink-200 bg-white px-3.5 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 focus:border-brand-400 disabled:opacity-60 dark:border-ink-700 dark:bg-ink-800 dark:text-ink-100"
       />

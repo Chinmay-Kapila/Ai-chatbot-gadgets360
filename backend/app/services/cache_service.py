@@ -3,7 +3,7 @@ Simple in-memory TTL cache service.
 
 Used to cache:
   - Parser JSON output (so identical queries don't re-hit Gemini).
-  - Common, non-personalized API responses (e.g. gold price, product
+  - Common, non-personalized API responses (e.g. price, product
     listings) to reduce upstream calls.
 
 Personalized responses (tied to a specific session's conversation) are

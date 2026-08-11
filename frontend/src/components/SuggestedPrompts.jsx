@@ -2,9 +2,8 @@ import { Cpu, Newspaper, TrendingUp, Smartphone } from 'lucide-react'
 
 const PROMPTS = [
   { icon: Smartphone, label: 'Best phones under ₹30,000', value: 'Suggest the best phones under ₹30,000 with a good camera' },
-  { icon: Cpu, label: 'Compare two laptops', value: 'Compare AeroBook 14 Slim with other laptops in the same price range' },
+  { icon: Cpu, label: 'Compare two laptops', value: 'Compare Apple MacBook Air with Dell Inspiron' },
   { icon: Newspaper, label: "Today's tech news", value: "What's the latest tech news today?" },
-  { icon: TrendingUp, label: 'Gold price today', value: 'What is the gold price today?' },
 ]
 
 /**

@@ -9,7 +9,7 @@ const WELCOME_MESSAGE = {
   id: 'welcome',
   role: 'assistant',
   content:
-    "Hi! I'm the Gadgets360 AI Assistant. Ask me about phones, laptops, tablets, smartwatches, TVs, tech news, reviews, comparisons, buying guides, or finance topics like crypto, gold, silver, fuel, and stock prices.",
+    "Hi! I'm the Gadgets360 AI Assistant. Ask me about phones, laptops, tablets, smartwatches, TVs, tech news, reviews, comparisons or buying guides.",
   format: 'markdown',
   product_cards: [],
   article_cards: [],

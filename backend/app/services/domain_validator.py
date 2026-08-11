@@ -24,9 +24,8 @@ logger = get_logger(__name__)
 REJECTION_MESSAGE = (
     "I'm the Gadgets360 AI Assistant, so I can only help with phones, "
     "laptops, tablets, smartwatches, TVs, AI & technology news, reviews, "
-    "comparisons, buying guides, and finance topics like crypto, gold, "
-    "silver, petrol, diesel, stocks, loans, and banking rates that "
-    "Gadgets360 covers. Could you ask me something in one of those areas?"
+    "comparisons, buying guides that Gadgets360 covers."
+    "Could you ask me something in one of those areas?"
 )
 
 

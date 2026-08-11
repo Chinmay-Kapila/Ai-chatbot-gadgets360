@@ -1,0 +1,542 @@
+{
+  "intent=recommendation|cat=phone|brand=none|prod=none|pmin=none|pmax=none|ram=none|storage=none|rev=0|news=0": {
+    "intent_key": "intent=recommendation|cat=phone|brand=none|prod=none|pmin=none|pmax=none|ram=none|storage=none|rev=0|news=0",
+    "intent": {
+      "intent": "recommendation",
+      "entity": "phone",
+      "category": "phone",
+      "brand": null,
+      "product_name": null,
+      "keywords": null,
+      "query_text": null,
+      "budget": null,
+      "priority": null,
+      "count": null,
+      "compare_items": null,
+      "needs_summary": true,
+      "in_scope": true,
+      "rejection_reason": null
+    },
+    "answer": "Here are the best smartphones available under ₹40,000 based on the available options:\n\n### 1. **Motorola Edge 70 Pro** (₹39,999)\n* **Best for:** Top-tier performance and large display right at the ₹40,000 mark.\n* **Key Specs:** Features a powerful MediaTek Dimensity 8500 Extreme processor, a spacious 6.80-inch display, a high-resolution 50-megapixel front camera, and carries a rating of 8.\n\n### 2. **OPPO Reno 15** (₹35,990)\n* **Best for:** A compact design with great performance and high overall rating.\n* **Key Specs:** Comes with a top rating of 100, a compact 6.32-inch display, a MediaTek Dimensity 8450 processor, and a 50-megapixel front camera for high-quality selfies.\n\n### 3. **Motorola Edge 70 Fusion** (₹30,999)\n* **Best for:** A balance of strong camera specs and display size at a lower price point.\n* **Key Specs:** Features a large 6.80-inch display, a dual rear camera setup (50-megapixel + 13-megapixel), a 32-megapixel front camera, and has a rating of 8.\n\n---\n\n### **Budget Alternative:**\n* **Moto G37 Power** (₹16,999): If you want to spend significantly less, this model offers a 6.67-inch display powered by a MediaTek Dimensity 6300 processor with a rating of 7.\n\n*(Note: Higher-end devices like the OnePlus 13s are priced above ₹40,000 and have been excluded.)*",
+    "product_cards": [
+      {
+        "id": "134999",
+        "name": "OPPO Reno 15",
+        "brand": "OPPO",
+        "price": 35990.0,
+        "currency": "INR",
+        "rating": 100.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/oppo-reno-15-636x800-1763383301.jpg",
+        "url": "https://www.gadgets360.com/oppo-reno-15-price-in-india-134999",
+        "key_specs": {
+          "Display": "6.32-inch",
+          "Processor": "MediaTek Dimensity 8450",
+          "Front_Camera": "50-megapixel ",
+          "Rear_Camera": "200-megapixel + 50-megapixel + 50-megapixel ",
+          "RAM": "12GB",
+          "Storage": "256GB",
+          "Battery_Capacity": "6200mAh",
+          "OS": "Android 16",
+          "Resolution": "1216x2640 pixels"
+        },
+        "review_url": "",
+        "discount": "25",
+        "availability": "In Stock",
+        "store_name": "Amazon"
+      },
+      {
+        "id": "136306",
+        "name": "Moto G37 Power",
+        "brand": "Motorola",
+        "price": 16999.0,
+        "currency": "INR",
+        "rating": 7.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/Moto-G37-Power-DB-709x800-1777545288.jpg",
+        "url": "https://www.gadgets360.com/moto-g37-power-price-in-india-136306",
+        "key_specs": {
+          "Display": "6.67-inch",
+          "Processor": "MediaTek Dimensity 6300",
+          "Front_Camera": "Unspecified",
+          "Rear_Camera": "50-megapixel",
+          "RAM": "8GB",
+          "Storage": "256GB",
+          "Battery_Capacity": "7000mAh",
+          "OS": "Android 16",
+          "Resolution": "720x1604 pixels"
+        },
+        "review_url": "https://www.gadgets360.com/mobiles/reviews/moto-g37-power-review-11575932",
+        "discount": "35",
+        "availability": "In Stock",
+        "store_name": "Flipkart"
+      },
+      {
+        "id": "135731",
+        "name": "Motorola Edge 70 Fusion",
+        "brand": "Motorola",
+        "price": 30999.0,
+        "currency": "INR",
+        "rating": 8.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/11-800x1001-1772088089.png",
+        "url": "https://www.gadgets360.com/motorola-edge-70-fusion-price-in-india-135731",
+        "key_specs": {
+          "Display": "6.80-inch",
+          "Front_Camera": "32-megapixel",
+          "Rear_Camera": "50-megapixel + 13-megapixel",
+          "RAM": "8GB",
+          "Storage": "128GB",
+          "Battery_Capacity": "5200mAh",
+          "OS": "Android Android 16",
+          "Resolution": "2772x1272 pixels"
+        },
+        "review_url": "https://www.gadgets360.com/mobiles/reviews/motorola-edge-70-fusion-review-11383105",
+        "discount": "27",
+        "availability": "In Stock",
+        "store_name": "Flipkart"
+      },
+      {
+        "id": "136164",
+        "name": "Motorola Edge 70 Pro",
+        "brand": "Motorola",
+        "price": 39999.0,
+        "currency": "INR",
+        "rating": 8.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/motorola-edge-70-pro-db-240x180-1776840985.png",
+        "url": "https://www.gadgets360.com/motorola-edge-70-pro-price-in-india-136164",
+        "key_specs": {
+          "Display": "6.80-inch",
+          "Processor": "MediaTek Dimensity 8500 Extreme",
+          "Front_Camera": "50-megapixel ",
+          "Rear_Camera": "50-megapixel + 50-megapixel ",
+          "RAM": "8GB",
+          "Storage": "256GB",
+          "Battery_Capacity": "6500mAh",
+          "OS": "Android 16",
+          "Resolution": "2772x1272 pixels"
+        },
+        "review_url": "https://www.gadgets360.com/mobiles/reviews/motorola-edge-70-pro-review-11499354",
+        "discount": "23",
+        "availability": "In Stock",
+        "store_name": "Flipkart"
+      },
+      {
+        "id": "132087",
+        "name": "OnePlus 13s",
+        "brand": "OnePlus",
+        "price": 51999.0,
+        "currency": "INR",
+        "rating": 9.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/oneplus-13s-646x800-1749107425.jpg",
+        "url": "https://www.gadgets360.com/oneplus-13s-price-in-india-132087",
+        "key_specs": {
+          "Display": "6.32-inch",
+          "Processor": "Snapdragon 8 Elite",
+          "Front_Camera": "32-megapixel ",
+          "Rear_Camera": "50-megapixel + 50-megapixel ",
+          "RAM": "12GB",
+          "Storage": "256GB",
+          "Battery_Capacity": "5850mAh",
+          "OS": "Android 15",
+          "Resolution": "1216x2640 pixels"
+        },
+        "review_url": "https://www.gadgets360.com/mobiles/reviews/oneplus-13s-review-8580559",
+        "discount": "10",
+        "availability": "In Stock",
+        "store_name": "Amazon"
+      }
+    ],
+    "article_cards": [],
+    "related_links": [
+      {
+        "title": "OPPO Reno 15",
+        "url": "https://www.gadgets360.com/oppo-reno-15-price-in-india-134999"
+      },
+      {
+        "title": "Moto G37 Power",
+        "url": "https://www.gadgets360.com/moto-g37-power-price-in-india-136306"
+      },
+      {
+        "title": "Motorola Edge 70 Fusion",
+        "url": "https://www.gadgets360.com/motorola-edge-70-fusion-price-in-india-135731"
+      },
+      {
+        "title": "Motorola Edge 70 Pro",
+        "url": "https://www.gadgets360.com/motorola-edge-70-pro-price-in-india-136164"
+      },
+      {
+        "title": "OnePlus 13s",
+        "url": "https://www.gadgets360.com/oneplus-13s-price-in-india-132087"
+      }
+    ],
+    "metadata": {
+      "intent": "recommendation",
+      "entity": "phone",
+      "used_gemini": true,
+      "source_apis": [
+        "products"
+      ],
+      "cached": false,
+      "generated_at": "2026-08-07T10:40:15.732930Z"
+    },
+    "created_at": "2026-08-07T16:10:15.735159"
+  },
+  "intent=recommendation|cat=smartphones|brand=none|prod=none|pmin=none|pmax=none|ram=none|storage=none|rev=0|news=0": {
+    "intent_key": "intent=recommendation|cat=smartphones|brand=none|prod=none|pmin=none|pmax=none|ram=none|storage=none|rev=0|news=0",
+    "intent": {
+      "intent": "recommendation",
+      "entity": "smartphones",
+      "category": "smartphones",
+      "brand": null,
+      "product_name": null,
+      "keywords": null,
+      "query_text": null,
+      "budget": null,
+      "priority": null,
+      "count": null,
+      "compare_items": null,
+      "needs_summary": true,
+      "in_scope": true,
+      "rejection_reason": null
+    },
+    "answer": "Here are the top smartphone options available under ₹40,000 based on the available data:\n\n* **OPPO Reno 15 (₹35,990):** This is a standout option featuring a compact 6.32-inch display, a MediaTek Dimensity 8450 processor, and a high-resolution 50-megapixel front camera. It holds a top rating of 100.\n* **Motorola Edge 70 Pro (₹39,999):** Sitting right at the upper limit of your budget, this phone comes with a large 6.80-inch display, a MediaTek Dimensity 8500 Extreme processor, and a 50-megapixel front camera. It carries a rating of 8.\n* **Motorola Edge 70 Fusion (₹30,999):** A solid mid-range choice offering a 6.80-inch display, a 32-megapixel front camera, and a dual rear camera system (50-megapixel + 13-megapixel). It also holds a rating of 8.\n* **Moto G37 Power (₹16,999):** If you are looking to spend well below the ₹40,000 mark, this budget option offers a 6.67-inch display and a MediaTek Dimensity 6300 processor, with a rating of 7.\n\n### Summary\nIf you are looking for top-tier specs and selfies, the **OPPO Reno 15** and **Motorola Edge 70 Pro** offer powerful MediaTek processors and 50-megapixel front cameras. For a lower price with balanced features, the **Motorola Edge 70 Fusion** is a great alternative, while the **Moto G37 Power** serves as an entry-level budget option.",
+    "product_cards": [
+      {
+        "id": "134999",
+        "name": "OPPO Reno 15",
+        "brand": "OPPO",
+        "price": 35990.0,
+        "currency": "INR",
+        "rating": 100.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/oppo-reno-15-636x800-1763383301.jpg",
+        "url": "https://www.gadgets360.com/oppo-reno-15-price-in-india-134999",
+        "key_specs": {
+          "Display": "6.32-inch",
+          "Processor": "MediaTek Dimensity 8450",
+          "Front_Camera": "50-megapixel ",
+          "Rear_Camera": "200-megapixel + 50-megapixel + 50-megapixel ",
+          "RAM": "12GB",
+          "Storage": "256GB",
+          "Battery_Capacity": "6200mAh",
+          "OS": "Android 16",
+          "Resolution": "1216x2640 pixels"
+        },
+        "review_url": "",
+        "discount": "25",
+        "availability": "In Stock",
+        "store_name": "Amazon"
+      },
+      {
+        "id": "136306",
+        "name": "Moto G37 Power",
+        "brand": "Motorola",
+        "price": 16999.0,
+        "currency": "INR",
+        "rating": 7.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/Moto-G37-Power-DB-709x800-1777545288.jpg",
+        "url": "https://www.gadgets360.com/moto-g37-power-price-in-india-136306",
+        "key_specs": {
+          "Display": "6.67-inch",
+          "Processor": "MediaTek Dimensity 6300",
+          "Front_Camera": "Unspecified",
+          "Rear_Camera": "50-megapixel",
+          "RAM": "8GB",
+          "Storage": "256GB",
+          "Battery_Capacity": "7000mAh",
+          "OS": "Android 16",
+          "Resolution": "720x1604 pixels"
+        },
+        "review_url": "https://www.gadgets360.com/mobiles/reviews/moto-g37-power-review-11575932",
+        "discount": "35",
+        "availability": "In Stock",
+        "store_name": "Flipkart"
+      },
+      {
+        "id": "135731",
+        "name": "Motorola Edge 70 Fusion",
+        "brand": "Motorola",
+        "price": 30999.0,
+        "currency": "INR",
+        "rating": 8.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/11-800x1001-1772088089.png",
+        "url": "https://www.gadgets360.com/motorola-edge-70-fusion-price-in-india-135731",
+        "key_specs": {
+          "Display": "6.80-inch",
+          "Front_Camera": "32-megapixel",
+          "Rear_Camera": "50-megapixel + 13-megapixel",
+          "RAM": "8GB",
+          "Storage": "128GB",
+          "Battery_Capacity": "5200mAh",
+          "OS": "Android Android 16",
+          "Resolution": "2772x1272 pixels"
+        },
+        "review_url": "https://www.gadgets360.com/mobiles/reviews/motorola-edge-70-fusion-review-11383105",
+        "discount": "27",
+        "availability": "In Stock",
+        "store_name": "Flipkart"
+      },
+      {
+        "id": "136164",
+        "name": "Motorola Edge 70 Pro",
+        "brand": "Motorola",
+        "price": 39999.0,
+        "currency": "INR",
+        "rating": 8.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/motorola-edge-70-pro-db-240x180-1776840985.png",
+        "url": "https://www.gadgets360.com/motorola-edge-70-pro-price-in-india-136164",
+        "key_specs": {
+          "Display": "6.80-inch",
+          "Processor": "MediaTek Dimensity 8500 Extreme",
+          "Front_Camera": "50-megapixel ",
+          "Rear_Camera": "50-megapixel + 50-megapixel ",
+          "RAM": "8GB",
+          "Storage": "256GB",
+          "Battery_Capacity": "6500mAh",
+          "OS": "Android 16",
+          "Resolution": "2772x1272 pixels"
+        },
+        "review_url": "https://www.gadgets360.com/mobiles/reviews/motorola-edge-70-pro-review-11499354",
+        "discount": "23",
+        "availability": "In Stock",
+        "store_name": "Flipkart"
+      },
+      {
+        "id": "132087",
+        "name": "OnePlus 13s",
+        "brand": "OnePlus",
+        "price": 51999.0,
+        "currency": "INR",
+        "rating": 9.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/oneplus-13s-646x800-1749107425.jpg",
+        "url": "https://www.gadgets360.com/oneplus-13s-price-in-india-132087",
+        "key_specs": {
+          "Display": "6.32-inch",
+          "Processor": "Snapdragon 8 Elite",
+          "Front_Camera": "32-megapixel ",
+          "Rear_Camera": "50-megapixel + 50-megapixel ",
+          "RAM": "12GB",
+          "Storage": "256GB",
+          "Battery_Capacity": "5850mAh",
+          "OS": "Android 15",
+          "Resolution": "1216x2640 pixels"
+        },
+        "review_url": "https://www.gadgets360.com/mobiles/reviews/oneplus-13s-review-8580559",
+        "discount": "10",
+        "availability": "In Stock",
+        "store_name": "Amazon"
+      }
+    ],
+    "article_cards": [],
+    "related_links": [
+      {
+        "title": "OPPO Reno 15",
+        "url": "https://www.gadgets360.com/oppo-reno-15-price-in-india-134999"
+      },
+      {
+        "title": "Moto G37 Power",
+        "url": "https://www.gadgets360.com/moto-g37-power-price-in-india-136306"
+      },
+      {
+        "title": "Motorola Edge 70 Fusion",
+        "url": "https://www.gadgets360.com/motorola-edge-70-fusion-price-in-india-135731"
+      },
+      {
+        "title": "Motorola Edge 70 Pro",
+        "url": "https://www.gadgets360.com/motorola-edge-70-pro-price-in-india-136164"
+      },
+      {
+        "title": "OnePlus 13s",
+        "url": "https://www.gadgets360.com/oneplus-13s-price-in-india-132087"
+      }
+    ],
+    "metadata": {
+      "intent": "recommendation",
+      "entity": "smartphones",
+      "used_gemini": true,
+      "source_apis": [
+        "products"
+      ],
+      "cached": false,
+      "generated_at": "2026-08-07T10:43:35.675920Z"
+    },
+    "created_at": "2026-08-07T16:13:35.676488"
+  },
+  "intent=recommendation|cat=mobile|brand=none|prod=none|pmin=none|pmax=none|ram=none|storage=none|rev=0|news=0": {
+    "intent_key": "intent=recommendation|cat=mobile|brand=none|prod=none|pmin=none|pmax=none|ram=none|storage=none|rev=0|news=0",
+    "intent": {
+      "intent": "recommendation",
+      "entity": "mobile",
+      "category": "mobile",
+      "brand": null,
+      "product_name": null,
+      "keywords": null,
+      "query_text": null,
+      "budget": null,
+      "priority": null,
+      "count": null,
+      "compare_items": null,
+      "needs_summary": true,
+      "in_scope": true,
+      "rejection_reason": null
+    },
+    "answer": "Here are the best phones under ₹40,000 based on the available data:\n\n* **Motorola Edge 70 Pro (₹39,999):** Sitting right at the top of your budget, this phone features a powerful MediaTek Dimensity 8500 Extreme processor, a large 6.80-inch display, and a 50-megapixel front camera. \n* **OPPO Reno 15 (₹35,990):** A top-rated option powered by the MediaTek Dimensity 8450 processor. It comes with a 50-megapixel front camera and a relatively compact 6.32-inch display.\n* **Motorola Edge 70 Fusion (₹30,999):** A slightly more affordable option that offers a large 6.80-inch display, a 50-megapixel + 13-megapixel rear camera setup, and a 32-megapixel front camera.\n\n**Comparison:**\nIf you want the highest performance in this price range, the **Motorola Edge 70 Pro** is the most powerful pick with its Dimensity 8500 Extreme chip and high-resolution front camera. If you prefer a smaller screen size, the **OPPO Reno 15** offers a similar high-resolution 50MP selfie camera in a more compact form factor. For a budget-friendly option that still delivers a large display and versatile cameras, the **Motorola Edge 70 Fusion** is a great value.\n\n*(Note: The Moto G37 Power is also available well under budget at ₹16,999 for entry-level needs, while options like the OnePlus 13s exceed the ₹40,000 limit at ₹51,999).*",
+    "product_cards": [
+      {
+        "id": "134999",
+        "name": "OPPO Reno 15",
+        "brand": "OPPO",
+        "price": 35990.0,
+        "currency": "INR",
+        "rating": 100.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/oppo-reno-15-636x800-1763383301.jpg",
+        "url": "https://www.gadgets360.com/oppo-reno-15-price-in-india-134999",
+        "key_specs": {
+          "Display": "6.32-inch",
+          "Processor": "MediaTek Dimensity 8450",
+          "Front_Camera": "50-megapixel ",
+          "Rear_Camera": "200-megapixel + 50-megapixel + 50-megapixel ",
+          "RAM": "12GB",
+          "Storage": "256GB",
+          "Battery_Capacity": "6200mAh",
+          "OS": "Android 16",
+          "Resolution": "1216x2640 pixels"
+        },
+        "review_url": "",
+        "discount": "25",
+        "availability": "In Stock",
+        "store_name": "Amazon"
+      },
+      {
+        "id": "136306",
+        "name": "Moto G37 Power",
+        "brand": "Motorola",
+        "price": 16999.0,
+        "currency": "INR",
+        "rating": 7.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/Moto-G37-Power-DB-709x800-1777545288.jpg",
+        "url": "https://www.gadgets360.com/moto-g37-power-price-in-india-136306",
+        "key_specs": {
+          "Display": "6.67-inch",
+          "Processor": "MediaTek Dimensity 6300",
+          "Front_Camera": "Unspecified",
+          "Rear_Camera": "50-megapixel",
+          "RAM": "8GB",
+          "Storage": "256GB",
+          "Battery_Capacity": "7000mAh",
+          "OS": "Android 16",
+          "Resolution": "720x1604 pixels"
+        },
+        "review_url": "https://www.gadgets360.com/mobiles/reviews/moto-g37-power-review-11575932",
+        "discount": "35",
+        "availability": "In Stock",
+        "store_name": "Flipkart"
+      },
+      {
+        "id": "135731",
+        "name": "Motorola Edge 70 Fusion",
+        "brand": "Motorola",
+        "price": 30999.0,
+        "currency": "INR",
+        "rating": 8.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/11-800x1001-1772088089.png",
+        "url": "https://www.gadgets360.com/motorola-edge-70-fusion-price-in-india-135731",
+        "key_specs": {
+          "Display": "6.80-inch",
+          "Front_Camera": "32-megapixel",
+          "Rear_Camera": "50-megapixel + 13-megapixel",
+          "RAM": "8GB",
+          "Storage": "128GB",
+          "Battery_Capacity": "5200mAh",
+          "OS": "Android Android 16",
+          "Resolution": "2772x1272 pixels"
+        },
+        "review_url": "https://www.gadgets360.com/mobiles/reviews/motorola-edge-70-fusion-review-11383105",
+        "discount": "27",
+        "availability": "In Stock",
+        "store_name": "Flipkart"
+      },
+      {
+        "id": "136164",
+        "name": "Motorola Edge 70 Pro",
+        "brand": "Motorola",
+        "price": 39999.0,
+        "currency": "INR",
+        "rating": 8.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/motorola-edge-70-pro-db-240x180-1776840985.png",
+        "url": "https://www.gadgets360.com/motorola-edge-70-pro-price-in-india-136164",
+        "key_specs": {
+          "Display": "6.80-inch",
+          "Processor": "MediaTek Dimensity 8500 Extreme",
+          "Front_Camera": "50-megapixel ",
+          "Rear_Camera": "50-megapixel + 50-megapixel ",
+          "RAM": "8GB",
+          "Storage": "256GB",
+          "Battery_Capacity": "6500mAh",
+          "OS": "Android 16",
+          "Resolution": "2772x1272 pixels"
+        },
+        "review_url": "https://www.gadgets360.com/mobiles/reviews/motorola-edge-70-pro-review-11499354",
+        "discount": "23",
+        "availability": "In Stock",
+        "store_name": "Flipkart"
+      },
+      {
+        "id": "132087",
+        "name": "OnePlus 13s",
+        "brand": "OnePlus",
+        "price": 51999.0,
+        "currency": "INR",
+        "rating": 9.0,
+        "image_url": "https://i.gadgets360cdn.com/products/large/oneplus-13s-646x800-1749107425.jpg",
+        "url": "https://www.gadgets360.com/oneplus-13s-price-in-india-132087",
+        "key_specs": {
+          "Display": "6.32-inch",
+          "Processor": "Snapdragon 8 Elite",
+          "Front_Camera": "32-megapixel ",
+          "Rear_Camera": "50-megapixel + 50-megapixel ",
+          "RAM": "12GB",
+          "Storage": "256GB",
+          "Battery_Capacity": "5850mAh",
+          "OS": "Android 15",
+          "Resolution": "1216x2640 pixels"
+        },
+        "review_url": "https://www.gadgets360.com/mobiles/reviews/oneplus-13s-review-8580559",
+        "discount": "10",
+        "availability": "In Stock",
+        "store_name": "Amazon"
+      }
+    ],
+    "article_cards": [],
+    "related_links": [
+      {
+        "title": "OPPO Reno 15",
+        "url": "https://www.gadgets360.com/oppo-reno-15-price-in-india-134999"
+      },
+      {
+        "title": "Moto G37 Power",
+        "url": "https://www.gadgets360.com/moto-g37-power-price-in-india-136306"
+      },
+      {
+        "title": "Motorola Edge 70 Fusion",
+        "url": "https://www.gadgets360.com/motorola-edge-70-fusion-price-in-india-135731"
+      },
+      {
+        "title": "Motorola Edge 70 Pro",
+        "url": "https://www.gadgets360.com/motorola-edge-70-pro-price-in-india-136164"
+      },
+      {
+        "title": "OnePlus 13s",
+        "url": "https://www.gadgets360.com/oneplus-13s-price-in-india-132087"
+      }
+    ],
+    "metadata": {
+      "intent": "recommendation",
+      "entity": "mobile",
+      "used_gemini": true,
+      "source_apis": [
+        "products"
+      ],
+      "cached": false,
+      "generated_at": "2026-08-07T10:45:00.652148Z"
+    },
+    "created_at": "2026-08-07T16:15:00.652973"
+  }
+}

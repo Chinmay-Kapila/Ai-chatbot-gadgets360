@@ -2,8 +2,7 @@
 
 Production-ready FastAPI backend powering an AI assistant scoped strictly
 to Gadgets360 content: phones, laptops, tablets, smartwatches, TVs, AI &
-technology, reviews, comparisons, buying guides, news, and finance topics
-(crypto, gold, silver, petrol, diesel, stocks, loans, banking).
+technology, reviews, comparisons, buying guides, news.
 
 ## Architecture
 
@@ -18,13 +17,13 @@ User
        rejected requests never reach Gemini for a response
     -> API Orchestrator - routes to Products / Reviews / News / Price /
        Search API clients based on parsed intent
-    -> Optimization - if the upstream API data is sufficient on its own
-       (e.g. "what's the current gold price"), the answer is formatted
+    -> Optimization - if the upstream API data is sufficient on its own the answer is formatted
        directly WITHOUT calling Gemini again
     -> Prompt Builder - assembles a clean, minimal, API-data-only context
     -> Response Generator (Gemini) - generates a concise markdown answer
        grounded strictly in the provided API data (only when reasoning /
        summarization / comparison is actually required)
+    ->Intent-Based Caching: Hashes the normalized intent/query and caches responses to reduce repeated API calls, Gemini token usage, and response latency.
   -> Response: { answer, product_cards, article_cards, related_links, metadata }
 ```
 
@@ -144,7 +143,7 @@ automatically after a period of inactivity by a background cleanup task.
 - Parser JSON output is cached (per message + history hash) to avoid
   re-parsing identical queries.
 - Common, non-personalized API responses (product searches, reviews,
-  news, finance rates) are cached briefly to reduce upstream load.
+  news) are cached briefly to reduce upstream load.
 - Personalized responses are never cached.
 
 ## Extending to a New LLM Provider

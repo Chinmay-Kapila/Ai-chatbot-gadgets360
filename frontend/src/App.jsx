@@ -51,8 +51,7 @@ function App() {
           </h1>
           <p className="mt-4 text-base leading-relaxed text-ink-500 dark:text-ink-400">
             Tap the assistant in the corner for phone recommendations, product
-            comparisons, reviews, buying guides, or live rates for crypto,
-            gold, silver, fuel, and stocks — all grounded in Gadgets360 data.
+            comparisons, reviews or buying guides — all grounded in Gadgets360 data.
           </p>
         </div>
 

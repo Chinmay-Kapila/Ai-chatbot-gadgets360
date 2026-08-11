@@ -1,43 +1,15 @@
 """
-Client for the Gadgets360 Reviews API.
+Client for the Gadgets360 / NDTV Reviews API.
 
-Talks to the real NDTV/Gadgets360 content feed:
-
-    GET {GADGETS360_REVIEWS_API_BASE}
+Talks to the NDTV/Gadgets360 content feed using the client key from settings:
+    GET https://search.ndtv.com/news/json/client_key/{client_key}/
         ?blog_id=9&order_by=published&direction=DESC
         &pagenumber=1&pagesize=<n>&content_type=reviews
         &categories=<category-slug>   (optional)
+        &title=<search-term>          (optional)
 
-which returns:
-
-    {
-      "total": 1000,
-      "results": [
-        {
-          "id": "11738784",
-          "title": "Nothing Phone (4b) First Impressions",
-          "link": "https://www.gadgets360.com/...",
-          "category": "Mobiles",
-          "category_slug": "mobiles",
-          "short_headline": "...",
-          "written_by": "Ketan Pratap",
-          "pubDate": "Tue, 07 Jul 2026 16:59:58 +0530",
-          "thumb_image": "https://i.gadgets360cdn.com/...",
-          "description": "..."
-        }
-      ]
-    }
-
-This is a DIFFERENT shape from the internal review/article schema the
-rest of the backend (orchestrator, prompt_builder, ArticleCard, and the
-frontend) expects:
-
+Normalizes raw upstream items into the internal schema expected by Orchestrator:
     { id, title, summary, published_at, image_url, url, category }
-
-Rather than changing every downstream consumer, this client is the
-single adapter/normalization point: `_normalize_review()` translates
-every raw upstream item into the internal schema before it ever leaves
-this file. Nothing outside this module needs to know the upstream shape.
 """
 
 from email.utils import parsedate_to_datetime
@@ -50,46 +22,50 @@ from app.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
-
-# Maps our internal entity vocabulary to the upstream feed's category
-# slugs. Entities with no sensible review category (finance/commodity
-# entities, "ai", "technology", "gadget", "none") are omitted, which
-# means "no category filter" — the feed's general/latest reviews.
+# Maps internal entity vocabulary & synonyms to category slugs
 ENTITY_TO_CATEGORY_SLUG = {
     "phone": "mobiles",
+    "phones": "mobiles",
+    "mobile": "mobiles",
+    "mobiles": "mobiles",
+    "smartphone": "mobiles",
+    "smartphones": "mobiles",
     "laptop": "laptops",
+    "laptops": "laptops",
     "tablet": "tablets",
+    "tablets": "tablets",
     "smartwatch": "wearables",
+    "smartwatches": "wearables",
+    "watch": "wearables",
     "tv": "tv",
+    "televisions": "tv",
 }
 
 
 class ReviewsClient(BaseAPIClient):
-    """Client for retrieving product reviews from the Gadgets360 feed."""
+    """Client for retrieving product reviews from the Gadgets360 / NDTV feed."""
 
     def __init__(self):
-        super().__init__(base_url=settings.GADGETS360_REVIEWS_API_BASE)
+        # Dynamically build the base URL using the client key from settings
+        client_key = getattr(settings, "GADGETS360_REVIEWS_CLIENT_KEY", "")
+        base_url = f"https://search.ndtv.com/news/json/client_key/{client_key}/"
+        super().__init__(base_url=base_url)
 
     async def get_reviews(
         self,
         entity: Optional[str] = None,
         product_id: Optional[str] = None,
         keywords: Optional[List[str]] = None,
+        brand: Optional[str] = None,
+        query_text: Optional[str] = None,
+        title: Optional[str] = None,
         count: int = 5,
+        content_type: str = "reviews"
     ) -> List[Dict[str, Any]]:
         """
-        Fetch reviews matching the given filters, normalized into the
-        internal schema.
-
-        Raises UpstreamAPIError if the upstream feed genuinely can't be
-        reached (network/HTTP failure) — callers must not silently
-        substitute fake data for a real API failure. A successful call
-        that legitimately has zero matching reviews is NOT an error and
-        returns an empty list.
+        Fetch reviews matching category, title, or keywords from the NDTV feed.
         """
-        # Fetch a larger pool than requested, since the upstream feed has
-        # no free-text search — we filter/rank by keyword locally below.
-        fetch_size = max(count * 4, 12)
+        fetch_size = max(count * 4, 20)
 
         params: Dict[str, Any] = {
             "blog_id": 9,
@@ -101,38 +77,50 @@ class ReviewsClient(BaseAPIClient):
             ),
             "pagenumber": 1,
             "pagesize": fetch_size,
-            "content_type": "reviews",
+            "content_type": content_type,
         }
 
-        category_slug = ENTITY_TO_CATEGORY_SLUG.get(entity or "")
+        # 1. Map Entity to Category Slug
+        category_slug = ENTITY_TO_CATEGORY_SLUG.get((entity or "").lower().strip())
         if category_slug:
             params["categories"] = category_slug
 
-        data = await self.get("", params=params)
-        raw_results = data.get("results") or []
+        # 2. Build Title Search String
+        title_param = self._build_title_param(title=title, brand=brand, keywords=keywords, query_text=query_text)
+        if title_param:
+            params["title"] = title_param
 
-        # A category-slug guess that happens to return nothing (wrong
-        # slug, too-narrow filter, etc.) shouldn't be treated the same
-        # as a genuinely empty feed — retry once without the filter
-        # before giving up on real data.
+        logger.info("[REVIEWS API] Fetching reviews with params: %s", params)
+
+        # 3. Execute Primary Fetch
+        data = await self.get("", params=params)
+        raw_results = data if isinstance(data, list) else (data.get("results") or [])
+
+        # 4. Defensive Fallback Cascade
+        if not raw_results and title_param:
+            # Fallback A: Try with just brand name if specific title search failed
+            if brand and title_param.lower() != brand.lower():
+                logger.info("[REVIEWS API] 0 results for title='%s', retrying with brand='%s'", title_param, brand)
+                fallback_params = dict(params)
+                fallback_params["title"] = brand
+                data = await self.get("", params=fallback_params)
+                raw_results = data.get("results") or []
+
+            # Fallback B: Drop title parameter completely
+            if not raw_results:
+                logger.info("[REVIEWS API] 0 results with title filter, retrying without title filter.")
+                fallback_params = {k: v for k, v in params.items() if k != "title"}
+                data = await self.get("", params=fallback_params)
+                raw_results = data.get("results") or []
+
         if not raw_results and category_slug:
-            logger.info(
-                "No results for categories=%s, retrying without category filter.",
-                category_slug,
-            )
-            broadened_params = {k: v for k, v in params.items() if k != "categories"}
-            data = await self.get("", params=broadened_params)
+            # Fallback C: Drop category parameter
+            logger.info("[REVIEWS API] 0 results with categories='%s', retrying without category filter.", category_slug)
+            fallback_params = {k: v for k, v in params.items() if k not in ("categories", "title")}
+            data = await self.get("", params=fallback_params)
             raw_results = data.get("results") or []
 
         normalized = self._normalize_all(raw_results)
-        if normalized:
-            logger.info("Fetched %d real review(s) from upstream feed.", len(normalized))
-        else:
-            logger.warning(
-                "Reviews feed returned 0 usable items for params=%s. "
-                "Raw response keys=%s, total=%s",
-                params, list(data.keys()), data.get("total"),
-            )
 
         if product_id:
             normalized = [r for r in normalized if r.get("product_id") == product_id]
@@ -142,14 +130,51 @@ class ReviewsClient(BaseAPIClient):
             if ranked:
                 normalized = ranked
 
+        logger.info("[REVIEWS API] Returning %d normalized review(s).", min(len(normalized), count))
         return normalized[:count]
 
+    @staticmethod
+    def _build_title_param(
+        title: Optional[str],
+        brand: Optional[str],
+        keywords: Optional[List[str]],
+        query_text: Optional[str],
+    ) -> Optional[str]:
+        """Construct a search string to append as &title=... in the NDTV API call."""
+        if title and title.strip():
+            return title.strip()
+
+        parts = []
+        if brand and brand.strip():
+            parts.append(brand.strip())
+
+        ignored_words = {
+            "phone", "phones", "mobile", "mobiles", "smartphone", "smartphones",
+            "review", "reviews", "latest", "best", "give", "show", "me", "the", "a", "an"
+        }
+
+        if keywords:
+            for kw in keywords:
+                cleaned = kw.strip()
+                if cleaned and cleaned.lower() not in ignored_words:
+                    if cleaned.lower() not in [p.lower() for p in parts]:
+                        parts.append(cleaned)
+
+        if parts:
+            return " ".join(parts)
+
+        if query_text:
+            tokens = [t for t in query_text.split() if t.lower() not in ignored_words]
+            if tokens:
+                return " ".join(tokens)
+
+        return None
+
     # ------------------------------------------------------------------
-    # Normalization (adapter layer): upstream shape -> internal schema
+    # Normalization Layer: Upstream Shape -> Internal Schema
     # ------------------------------------------------------------------
 
     def _normalize_all(self, raw_results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Normalize every raw item, skipping any that are malformed."""
         normalized = []
         for item in raw_results:
             try:
@@ -160,17 +185,16 @@ class ReviewsClient(BaseAPIClient):
 
     @staticmethod
     def _normalize_review(item: Dict[str, Any]) -> Dict[str, Any]:
-        """Translate one raw upstream review item into the internal schema."""
         raw_id = item.get("id")
-        description = item.get("description") or ""
+        description = item.get("description") or item.get("short_headline") or ""
 
         return {
             "id": str(raw_id) if raw_id is not None else new_id(prefix="rev_"),
             "title": item.get("title") or item.get("short_headline") or "Untitled Review",
             "summary": truncate(description, 400),
-            "published_at": ReviewsClient._parse_pub_date(item.get("pubDate")),
-            "image_url": item.get("thumb_image"),
-            "url": item.get("link"),
+            "published_at": ReviewsClient._parse_pub_date(item.get("pubDate") or item.get("published_at")),
+            "image_url": item.get("thumb_image") or item.get("image_url"),
+            "url": item.get("link") or item.get("url"),
             "category": item.get("category") or item.get("category_slug"),
             "product_id": None,
             "rating": None,
@@ -178,11 +202,6 @@ class ReviewsClient(BaseAPIClient):
 
     @staticmethod
     def _parse_pub_date(raw_date: Optional[str]) -> Optional[str]:
-        """
-        Parse an RFC-2822 style date (e.g. "Tue, 07 Jul 2026 16:59:58
-        +0530") into an ISO-8601 string. Falls back to the raw string if
-        parsing fails, since published_at is just a display field.
-        """
         if not raw_date:
             return None
         try:
@@ -191,20 +210,13 @@ class ReviewsClient(BaseAPIClient):
             return raw_date
 
     # ------------------------------------------------------------------
-    # Local keyword ranking (the upstream feed has no free-text search)
+    # Local Keyword Refinement
     # ------------------------------------------------------------------
 
     @staticmethod
     def _rank_by_keywords(
         reviews: List[Dict[str, Any]], keywords: List[str]
     ) -> List[Dict[str, Any]]:
-        """
-        Rank normalized reviews by how many of the given keywords appear
-        in their title/summary. Returns only reviews with at least one
-        match, most-relevant first, preserving recency order as a
-        tiebreaker. Returns an empty list if nothing matches, so the
-        caller can decide whether to fall back to the unfiltered set.
-        """
         normalized_keywords = [normalize_text(k) for k in keywords if k]
         if not normalized_keywords:
             return []

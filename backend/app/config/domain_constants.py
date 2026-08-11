@@ -18,7 +18,6 @@ class IntentType(str, Enum):
     PRICE_LOOKUP = "price_lookup"
     BUYING_GUIDE = "buying_guide"
     SEARCH = "search"
-    FINANCE_RATE = "finance_rate"
     GREETING = "greeting"
     UNSUPPORTED = "unsupported"
 
@@ -34,15 +33,6 @@ class EntityType(str, Enum):
     AI = "ai"
     TECHNOLOGY = "technology"
     GADGET = "gadget"
-    CRYPTO = "crypto"
-    GOLD = "gold"
-    SILVER = "silver"
-    PETROL = "petrol"
-    DIESEL = "diesel"
-    STOCK = "stock"
-    FINANCE = "finance"
-    LOAN = "loan"
-    BANKING = "banking"
     NONE = "none"
 
 
@@ -67,11 +57,6 @@ DOMAIN_KEYWORDS = {
     "compare", "comparison", "vs", "versus",
     "buying guide", "buy", "best",
     "news", "launch", "launched", "release", "released",
-    "crypto", "cryptocurrency", "bitcoin", "ethereum", "btc", "eth",
-    "gold", "silver", "bullion",
-    "petrol", "diesel", "fuel price",
-    "stock", "stocks", "share price", "sensex", "nifty",
-    "finance", "loan", "emi", "interest rate", "bank", "banking",
     "price", "cost", "specs", "specifications", "camera", "battery",
     "processor", "ram", "storage", "display",
 }
