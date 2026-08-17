@@ -12,38 +12,38 @@ logger = get_logger(__name__)
 _SAMPLE_NEWS: List[Dict[str, Any]] = [
     {
         "id": "news-001",
-        "title": "Orion Teases S13 Series Launch for Next Quarter",
+        "title": "Apple Teases iPhone 18 Series Launch for Next Quarter",
         "summary": (
-            "Orion has confirmed its next flagship series will arrive with "
-            "an upgraded chipset and faster charging support."
+            "Apple has confirmed its next flagship series will arrive with "
+            "an upgraded A-series chipset and advanced generative AI capabilities."
         ),
         "published_at": "2026-07-01",
-        "image_url": "https://static.gadgets360.com/sample/orion-s13-teaser.jpg",
-        "url": "https://www.gadgets360.com/news/orion-s13-series-launch-teaser",
+        "image_url": "https://i.gadgets360cdn.com/large/iphone_16_pro_max_macrumors_1725515284351.jpg",
+        "url": "https://www.gadgets360.com/mobiles/news/iphone-launch-teaser",
         "category": "news",
     },
     {
         "id": "news-002",
-        "title": "AI-Powered Camera Features Coming to More Budget Phones",
+        "title": "Samsung Brings Galaxy AI Features to Mid-Range Phones",
         "summary": (
-            "Chipset makers are pushing on-device AI camera processing down "
-            "to budget and mid-range smartphone segments."
+            "Samsung is pushing its on-device Galaxy AI processing down "
+            "to the budget and mid-range smartphone segments, starting with the A-series."
         ),
         "published_at": "2026-06-25",
-        "image_url": "https://static.gadgets360.com/sample/ai-camera-budget.jpg",
-        "url": "https://www.gadgets360.com/news/ai-camera-budget-phones",
+        "image_url": "https://i.gadgets360cdn.com/large/samsung_galaxy_a55_5g_review_1711623910609.jpg",
+        "url": "https://www.gadgets360.com/mobiles/news/samsung-galaxy-ai-budget-phones",
         "category": "news",
     },
     {
         "id": "news-003",
-        "title": "ViewMax Launches New QLED TV Lineup in India",
+        "title": "Sony Launches New Bravia OLED TV Lineup in India",
         "summary": (
-            "The new QLED lineup brings Google TV, Dolby Vision, and "
-            "improved refresh rates across multiple screen sizes."
+            "The new Bravia lineup brings Google TV, Dolby Vision, and "
+            "improved 144Hz refresh rates across multiple screen sizes."
         ),
         "published_at": "2026-06-10",
-        "image_url": "https://static.gadgets360.com/sample/viewmax-qled-lineup.jpg",
-        "url": "https://www.gadgets360.com/news/viewmax-qled-lineup-india",
+        "image_url": "https://i.gadgets360cdn.com/large/sony_bravia_9_1713437505295.jpg",
+        "url": "https://www.gadgets360.com/tv/news/sony-bravia-oled-tv-lineup-india",
         "category": "news",
     },
 ]

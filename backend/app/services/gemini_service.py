@@ -26,32 +26,42 @@ from app.utils.logger import get_logger
 logger = get_logger(__name__)
 
 
-def fallback_parse_query(user_message: str) -> ParsedQuery:
+def fallback_parse_query(user_message: str, history: Optional[List[Dict[str, Any]]] = None) -> ParsedQuery:
     """
-    Lightweight rule-based fallback parser used when Gemini API is unavailable or rate-limited.
-    Extracts intent, entity, budget, priority, and keywords using regex rules.
+    Lightweight rule-based fallback parser.
+    Now history-aware to maintain context during Gemini rate limits!
     """
     msg = user_message.lower()
+    
+    # Create a combined string of the last 3 messages + current message for context
+    context_text = msg
+    if history:
+        context_text = " ".join([m.get("content", "").lower() for m in history[-3:]]) + " " + msg
 
-   
-
+    # --- Use CONTEXT TEXT for persistent things (Entities & Brands) ---
     entity = "none"
-    intent = "search"
+    if any(w in context_text for w in ["phone", "mobile", "smartphone"]):
+        entity = "phone"
+    elif any(w in context_text for w in ["laptop", "macbook", "notebook"]):
+        entity = "laptop"
+    elif any(w in context_text for w in ["tablet", "ipad"]):
+        entity = "tablet"
+    elif any(w in context_text for w in ["watch", "smartwatch"]):
+        entity = "smartwatch"
+    elif any(w in context_text for w in ["tv", "television"]):
+        entity = "tv"
 
-   
-    if entity == "none":
-        if any(w in msg for w in ["phone", "mobile", "smartphone"]):
-            entity = "phone"
-        elif any(w in msg for w in ["laptop", "macbook", "notebook"]):
-            entity = "laptop"
-        elif any(w in msg for w in ["tablet", "ipad"]):
-            entity = "tablet"
-        elif any(w in msg for w in ["watch", "smartwatch"]):
-            entity = "smartwatch"
-        elif any(w in msg for w in ["tv", "television"]):
-            entity = "tv"
+    brand: Optional[str] = None
+    common_brands = [
+        "samsung", "apple", "iphone", "oneplus", "motorola", "moto", 
+        "vivo", "oppo", "xiaomi", "realme", "asus", "dell", "hp", "lenovo", "acer", "lg"
+    ]
+    for b in common_brands:
+        if b in context_text:
+            brand = "Apple" if b == "iphone" else "Motorola" if b == "moto" else b.capitalize()
+            break
 
-    # Priority extraction
+    # --- Use CURRENT MESSAGE ONLY for immediate intents & filters ---
     priority: Optional[str] = None
     if any(w in msg for w in ["camera", "reels", "shoot", "photo", "video", "instagram"]):
         priority = "camera"
@@ -60,6 +70,7 @@ def fallback_parse_query(user_message: str) -> ParsedQuery:
     elif any(w in msg for w in ["battery", "charging", "backup"]):
         priority = "battery"
 
+    intent = "search"
     if any(w in msg for w in ["best", "top", "recommend", "suggest", "under", "which"]):
         intent = "recommendation"
     elif "vs" in msg or "compare" in msg:
@@ -69,7 +80,6 @@ def fallback_parse_query(user_message: str) -> ParsedQuery:
     elif "news" in msg:
         intent = "news"
 
-    # Budget extraction
     budget: Optional[float] = None
     budget_match = re.search(r'(?:under|below|around|less than|\<)\s*₹?\s*(\d+[\d,]*|\d+k)', msg)
     if budget_match:
@@ -84,6 +94,7 @@ def fallback_parse_query(user_message: str) -> ParsedQuery:
     return ParsedQuery(
         intent=intent,
         entity=entity,
+        brand=brand,
         category=entity,
         budget=budget,
         priority=priority,
@@ -223,10 +234,10 @@ class GeminiService(LLMService):
             return ParsedQuery(**parsed_json)
         except GeminiServiceError as exc:
             logger.warning("[PARSER FALLBACK] Gemini parse failed (%s). Using local heuristic parser.", exc)
-            return fallback_parse_query(user_message)
+            return fallback_parse_query(user_message, history)
         except (json.JSONDecodeError, ValueError) as exc:
             logger.warning("[PARSER FALLBACK] Invalid JSON from Gemini parser (%s). Using local heuristic parser.", exc)
-            return fallback_parse_query(user_message)
+            return fallback_parse_query(user_message, history)
 
     async def generate_response(
         self,

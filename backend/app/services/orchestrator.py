@@ -68,6 +68,9 @@ class Orchestrator:
         Main orchestration entry point. Returns a dict with all fields
         needed to build the final ChatResponse.
         """
+        if parsed.intent in ("product_search", "search_products", "find"):
+            parsed.intent = "recommendation" if (parsed.brand or parsed.category) else "search"
+            
         if parsed.intent == "greeting":
             return self._build_greeting_response()
 
@@ -84,7 +87,7 @@ class Orchestrator:
             products = rank_products(products, parsed)
             source_apis.append("products")
             product_cards = self._to_product_cards(products)
-
+        
         elif parsed.intent == "comparison":
             products = await self._get_comparison_products(parsed)
             products = rank_products(products, parsed, top_k=max(len(parsed.compare_items or []), 2))
@@ -138,11 +141,16 @@ class Orchestrator:
             return await self._handle_product_price_lookup(parsed)
 
         elif parsed.intent == "search":
-            results = await self._get_search_results(parsed, user_message)
-            ranked_products = rank_products(results.get("products", []), parsed)
-            ranked_articles = rank_articles(results.get("articles", []), parsed)
-            source_apis.append("search")
+            # 1. Get top 3-4 phones (Products API)
+            products = await self._get_products(parsed, count=4)
+            ranked_products = rank_products(products, parsed)
+            source_apis.append("products")
             product_cards = self._to_product_cards(ranked_products)
+
+            # 2. Get latest news about that entity (News API)
+            news = await self._get_news(parsed)
+            ranked_articles = rank_articles(news, parsed)
+            source_apis.append("news")
             article_cards = self._to_article_cards(ranked_articles)
 
         else:
@@ -207,27 +215,6 @@ class Orchestrator:
                         seen_ids.add(best.get("id"))
                 except Exception as exc:
                     logger.warning("Search fallback failed for comparison item '%s': %s", item_name, exc)
-
-            if matches:
-                return matches
-
-        return await self._get_products(parsed, count=max(parsed.count or 2, 2))
-    async def _get_comparison_products(self, parsed: ParsedQuery) -> List[Dict[str, Any]]:
-        if parsed.compare_items:
-            matches: List[Dict[str, Any]] = []
-            seen_ids = set()
-
-            for item_name in parsed.compare_items:
-                item_results = await self.products_client.search_products(
-                    entity=parsed.entity, keywords=[item_name], count=3
-                )
-                best = next(
-                    (p for p in item_results if item_name.lower() in p.get("name", "").lower()),
-                    item_results[0] if item_results else None,
-                )
-                if best and best.get("id") not in seen_ids:
-                    matches.append(best)
-                    seen_ids.add(best.get("id"))
 
             if matches:
                 return matches

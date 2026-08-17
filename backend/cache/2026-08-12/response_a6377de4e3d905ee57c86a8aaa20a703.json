@@ -1,0 +1,191 @@
+{
+  "cache_key": "intent=recommendation|cat=phone|brand=samsung|prod=none|pmin=none|pmax=40000|ram=none|storage=none|rev=0|news=0",
+  "cache_hash": "a6377de4e3d905ee57c86a8aaa20a703",
+  "intent": {
+    "intent": "recommendation",
+    "entity": "phone",
+    "category": "phone",
+    "brand": "Samsung",
+    "product_name": null,
+    "price_min": null,
+    "price_max": null,
+    "ram": null,
+    "storage": null,
+    "reviews": false,
+    "news": false,
+    "keywords": [
+      "actually",
+      "only",
+      "show",
+      "the",
+      "ones",
+      "under",
+      "000"
+    ],
+    "query_text": null,
+    "budget": 40000.0,
+    "priority": null,
+    "count": null,
+    "compare_items": null,
+    "needs_summary": true,
+    "in_scope": true,
+    "rejection_reason": null
+  },
+  "answer": "I found some relevant information, but I'm having trouble summarizing it right now. Please see the details below or try again shortly.",
+  "product_cards": [
+    {
+      "id": "91346",
+      "name": "Samsung Galaxy A71",
+      "brand": "Samsung",
+      "price": 32990.0,
+      "currency": "INR",
+      "rating": 86.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/samsung-galaxy-a71-374x800-1576143283.jpg",
+      "url": "https://www.gadgets360.com/samsung-galaxy-a71-price-in-india-91346",
+      "key_specs": {
+        "Display": "6.70-inch",
+        "Front_Camera": "32-megapixel ",
+        "Rear_Camera": "64-megapixel + 12-megapixel + 5-megapixel + 5-megapixel ",
+        "RAM": "8GB",
+        "Storage": "128GB",
+        "Battery_Capacity": "4500mAh",
+        "OS": "Android 10",
+        "Resolution": "1080x2400 pixels"
+      },
+      "review_url": "",
+      "discount": "0",
+      "availability": "In Stock",
+      "store_name": "Flipkart"
+    },
+    {
+      "id": "97350",
+      "name": "Samsung Galaxy S20 FE 5G",
+      "brand": "Samsung",
+      "price": 25999.0,
+      "currency": "INR",
+      "rating": 9.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/samsung-galaxys20fe-cloud-orange-front-373x800-1600870325.jpg",
+      "url": "https://www.gadgets360.com/samsung-galaxy-s20-fe-5g-price-in-india-97350",
+      "key_specs": {
+        "Display": "6.50-inch",
+        "Processor": "Qualcomm Snapdragon 865",
+        "Front_Camera": "32-megapixel",
+        "Rear_Camera": "12-megapixel + 12-megapixel + 8-megapixel",
+        "RAM": "8GB",
+        "Storage": "128GB",
+        "Battery_Capacity": "4500mAh",
+        "OS": "Android 10",
+        "Resolution": "1080x2400 pixels"
+      },
+      "review_url": "https://www.gadgets360.com/mobiles/reviews/samsung-s20-fe-5g-review-price-in-india-specs-performance-camera-battery-galaxy-2461847",
+      "discount": "32",
+      "availability": "Out of Stock",
+      "store_name": "Amazon"
+    },
+    {
+      "id": "124701",
+      "name": "Samsung Galaxy A35 5G",
+      "brand": "Samsung",
+      "price": 18999.0,
+      "currency": "INR",
+      "rating": 8.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/Galaxy-A35-5G-DB-709x800-1710158089.jpg",
+      "url": "https://www.gadgets360.com/samsung-galaxy-a35-5g-price-in-india-124701",
+      "key_specs": {
+        "Display": "6.60-inch",
+        "Front_Camera": "13-megapixel",
+        "Rear_Camera": "50-megapixel + 8-megapixel + 5-megapixel",
+        "RAM": "6GB",
+        "Storage": "128GB",
+        "Battery_Capacity": "5000mAh",
+        "OS": "Android 14",
+        "Resolution": "2340x1080 pixels"
+      },
+      "review_url": "https://www.gadgets360.com/mobiles/reviews/samsung-a55-a35-galaxy-review-5722476",
+      "discount": "44",
+      "availability": "In Stock",
+      "store_name": "Flipkart"
+    },
+    {
+      "id": "134637",
+      "name": "Samsung Galaxy M17 5G",
+      "brand": "Samsung",
+      "price": 16785.0,
+      "currency": "INR",
+      "rating": 8.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/samsung-galaxy-m17-5g-db-240x180-1760083420.png",
+      "url": "https://www.gadgets360.com/samsung-m17-5g-price-in-india-134637",
+      "key_specs": {
+        "Display": "6.70-inch",
+        "Front_Camera": "13-megapixel",
+        "Rear_Camera": "50-megapixel + 5-megapixel + 2-megapixel",
+        "Battery_Capacity": "5,000mAh",
+        "OS": "Android 15",
+        "Resolution": "‎1,080x2,340 pixels"
+      },
+      "review_url": "https://www.gadgets360.com/mobiles/reviews/samsung-galaxy-m17-5g-review-11251746",
+      "discount": "1",
+      "availability": "In Stock",
+      "store_name": "Flipkart"
+    },
+    {
+      "id": "130980",
+      "name": "Samsung Galaxy A56 5G",
+      "brand": "Samsung",
+      "price": 31999.0,
+      "currency": "INR",
+      "rating": 8.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/samsung-galaxy-a56-5g-612x800-1740913945.jpg",
+      "url": "https://www.gadgets360.com/samsung-galaxy-a56-5g-price-in-india-130980",
+      "key_specs": {
+        "Display": "6.70-inch",
+        "Front_Camera": "12-megapixel ",
+        "Rear_Camera": "50-megapixel + 12-megapixel + 5-megapixel ",
+        "RAM": "8GB",
+        "Storage": "128GB",
+        "Battery_Capacity": "5000mAh",
+        "OS": "Android 15",
+        "Resolution": "2340x1080 pixels"
+      },
+      "review_url": "https://www.gadgets360.com/mobiles/reviews/samsung-galaxy-a56-a36-review-9012820",
+      "discount": "30",
+      "availability": "In Stock",
+      "store_name": "Amazon"
+    }
+  ],
+  "article_cards": [],
+  "related_links": [
+    {
+      "title": "Samsung Galaxy A71",
+      "url": "https://www.gadgets360.com/samsung-galaxy-a71-price-in-india-91346"
+    },
+    {
+      "title": "Samsung Galaxy S20 FE 5G",
+      "url": "https://www.gadgets360.com/samsung-galaxy-s20-fe-5g-price-in-india-97350"
+    },
+    {
+      "title": "Samsung Galaxy A35 5G",
+      "url": "https://www.gadgets360.com/samsung-galaxy-a35-5g-price-in-india-124701"
+    },
+    {
+      "title": "Samsung Galaxy M17 5G",
+      "url": "https://www.gadgets360.com/samsung-m17-5g-price-in-india-134637"
+    },
+    {
+      "title": "Samsung Galaxy A56 5G",
+      "url": "https://www.gadgets360.com/samsung-galaxy-a56-5g-price-in-india-130980"
+    }
+  ],
+  "metadata": {
+    "intent": "recommendation",
+    "entity": "phone",
+    "budget": null,
+    "used_gemini": true,
+    "source_apis": [
+      "products"
+    ],
+    "cached": false,
+    "generated_at": "2026-08-12T12:24:03.899388Z"
+  },
+  "created_at": "2026-08-12T17:54:03.901493"
+}

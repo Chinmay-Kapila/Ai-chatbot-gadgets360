@@ -78,7 +78,8 @@ class ResponseMetadata(BaseModel):
     """Metadata describing how the response was generated."""
 
     intent: str
-    entity: str
+    entity: Optional[str] = None
+    budget: Optional[float] = None
     used_gemini: bool
     source_apis: List[str] = Field(default_factory=list)
     cached: bool = False

@@ -1,0 +1,116 @@
+{
+  "cache_key": "intent=review|cat=phone|brand=none|prod=none|pmin=none|pmax=none|ram=none|storage=none|rev=1|news=0",
+  "cache_hash": "f3c1f44e55f7703e3a9569d91d9ab8da",
+  "intent": {
+    "intent": "review",
+    "entity": "mobile",
+    "category": "mobile",
+    "brand": null,
+    "product_name": null,
+    "price_min": null,
+    "price_max": null,
+    "ram": null,
+    "storage": null,
+    "reviews": true,
+    "news": false,
+    "keywords": null,
+    "query_text": "is it worth buying",
+    "budget": null,
+    "priority": null,
+    "count": null,
+    "compare_items": null,
+    "needs_summary": true,
+    "in_scope": true,
+    "rejection_reason": null
+  },
+  "answer": "To determine if it is worth buying, here is how the available options stack up based on your budget and preferences:\n\n### **OPPO Reno 15 (₹35,990)**\n* **Why it's worth considering:** It offers strong value in the mid-range segment with a 28% discount off its price and an impressive overall rating. \n* **Key Specs:** Features a compact 6.32-inch display, MediaTek Dimensity 8450 processor, and a high-resolution 50-megapixel front camera.\n\n### **Motorola Signature (₹54,749)**\n* **Why it's worth considering:** A solid premium choice if you need higher-end performance and a larger screen, currently available at a 15% discount.\n* **Key Specs:** Powered by the flagship Snapdragon 8 Gen 5 processor, featuring a large 6.80-inch display and a 50-megapixel front camera.\n\n---\n\n*(Note: If you are referring to the **Samsung Galaxy Z Fold 8**, review feedback highlights that its new passport-style squarish design and slim bezels make it great for one-handed use and watching video content, though it comes at a higher price point.)*",
+  "product_cards": [
+    {
+      "id": "134999",
+      "name": "OPPO Reno 15",
+      "brand": "OPPO",
+      "price": 35990.0,
+      "currency": "INR",
+      "rating": 100.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/oppo-reno-15-636x800-1763383301.jpg",
+      "url": "https://www.gadgets360.com/oppo-reno-15-price-in-india-134999",
+      "key_specs": {
+        "Display": "6.32-inch",
+        "Processor": "MediaTek Dimensity 8450",
+        "Front_Camera": "50-megapixel ",
+        "Rear_Camera": "200-megapixel + 50-megapixel + 50-megapixel ",
+        "RAM": "12GB",
+        "Storage": "256GB",
+        "Battery_Capacity": "6200mAh",
+        "OS": "Android 16",
+        "Resolution": "1216x2640 pixels"
+      },
+      "review_url": "",
+      "discount": "28",
+      "availability": "In Stock",
+      "store_name": "Amazon"
+    },
+    {
+      "id": "135428",
+      "name": "Motorola Signature",
+      "brand": "Motorola",
+      "price": 54749.0,
+      "currency": "INR",
+      "rating": 8.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/motorola-signature-db-1-633x800-1767765181.png",
+      "url": "https://www.gadgets360.com/motorola-signature-price-in-india-135428",
+      "key_specs": {
+        "Display": "6.80-inch",
+        "Processor": "Snapdragon 8 Gen 5",
+        "Front_Camera": "50-megapixel ",
+        "Rear_Camera": "50-megapixel + 50-megapixel ",
+        "RAM": "12GB",
+        "Storage": "512GB",
+        "Battery_Capacity": "5200mAh",
+        "OS": "Android 16",
+        "Resolution": "1264x2780 pixels"
+      },
+      "review_url": "https://www.gadgets360.com/mobiles/reviews/motorola-signature-review-10891938",
+      "discount": "15",
+      "availability": "In Stock",
+      "store_name": "Amazon"
+    }
+  ],
+  "article_cards": [
+    {
+      "id": "11853075",
+      "title": "Samsung Galaxy Z Fold 8 Review: Why the Passport Shape Actually Works",
+      "summary": "The Galaxy Z Fold 8 brings a new design that's easier on the eyes and great for one-hand use. The squarish design and slim bezels offer a great screen combo for both short and long-form video content. The pricing is, of course, on the higher side, like all new-age flagship devices, but it offers a design that's not common in the market and will win you over at first g...",
+      "published_at": "2026-08-01T20:06:58+05:30",
+      "image_url": "https://i.gadgets360cdn.com/large/samsung-galaxy-z-fold8-review-thumb_1785589698682.jpg",
+      "url": "https://www.gadgets360.com/mobiles/reviews/samsung-galaxy-z-fold-8-review-specs-price-verdict-11853075",
+      "category": "Mobiles"
+    }
+  ],
+  "related_links": [
+    {
+      "title": "OPPO Reno 15",
+      "url": "https://www.gadgets360.com/oppo-reno-15-price-in-india-134999"
+    },
+    {
+      "title": "Motorola Signature",
+      "url": "https://www.gadgets360.com/motorola-signature-price-in-india-135428"
+    },
+    {
+      "title": "Samsung Galaxy Z Fold 8 Review: Why the Passport Shape Actually Works",
+      "url": "https://www.gadgets360.com/mobiles/reviews/samsung-galaxy-z-fold-8-review-specs-price-verdict-11853075"
+    }
+  ],
+  "metadata": {
+    "intent": "review",
+    "entity": "mobile",
+    "used_gemini": true,
+    "source_apis": [
+      "reviews",
+      "products"
+    ],
+    "cached": false,
+    "generated_at": "2026-08-12T07:17:02.781213Z"
+  },
+  "created_at": "2026-08-12T12:47:02.782345"
+}

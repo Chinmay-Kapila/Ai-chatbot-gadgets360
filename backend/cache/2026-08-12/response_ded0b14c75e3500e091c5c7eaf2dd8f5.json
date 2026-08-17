@@ -1,0 +1,42 @@
+{
+  "cache_key": "intent=recommendation|cat=phone|brand=samsung|prod=none|pmin=none|pmax=none|ram=none|storage=none|rev=0|news=0",
+  "cache_hash": "ded0b14c75e3500e091c5c7eaf2dd8f5",
+  "intent": {
+    "intent": "recommendation",
+    "entity": "phones",
+    "category": "phones",
+    "brand": "Samsung",
+    "product_name": null,
+    "price_min": null,
+    "price_max": null,
+    "ram": null,
+    "storage": null,
+    "reviews": false,
+    "news": false,
+    "keywords": null,
+    "query_text": null,
+    "budget": null,
+    "priority": null,
+    "count": null,
+    "compare_items": null,
+    "needs_summary": true,
+    "in_scope": true,
+    "rejection_reason": null
+  },
+  "answer": "I don't have access to any product data or API results at the moment to recommend Samsung phones. Please try your search again later or provide specific data so I can assist you!",
+  "product_cards": [],
+  "article_cards": [],
+  "related_links": [],
+  "metadata": {
+    "intent": "recommendation",
+    "entity": "phones",
+    "budget": null,
+    "used_gemini": true,
+    "source_apis": [
+      "products"
+    ],
+    "cached": false,
+    "generated_at": "2026-08-12T12:19:16.375309Z"
+  },
+  "created_at": "2026-08-12T17:49:16.375735"
+}

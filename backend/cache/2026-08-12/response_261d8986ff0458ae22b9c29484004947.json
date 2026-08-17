@@ -1,0 +1,234 @@
+{
+  "cache_key": "intent=search|cat=phone|brand=samsung|prod=none|pmin=none|pmax=none|ram=none|storage=none|rev=0|news=0",
+  "cache_hash": "261d8986ff0458ae22b9c29484004947",
+  "intent": {
+    "intent": "search",
+    "entity": "phone",
+    "category": "phone",
+    "brand": "Samsung",
+    "product_name": null,
+    "price_min": null,
+    "price_max": null,
+    "ram": null,
+    "storage": null,
+    "reviews": false,
+    "news": false,
+    "keywords": [
+      "show",
+      "some",
+      "good",
+      "samsung",
+      "phones"
+    ],
+    "query_text": null,
+    "budget": null,
+    "priority": null,
+    "count": null,
+    "compare_items": null,
+    "needs_summary": true,
+    "in_scope": true,
+    "rejection_reason": null
+  },
+  "answer": "I found some relevant information, but I'm having trouble summarizing it right now. Please see the details below or try again shortly.",
+  "product_cards": [
+    {
+      "id": "91346",
+      "name": "Samsung Galaxy A71",
+      "brand": "Samsung",
+      "price": 32990.0,
+      "currency": "INR",
+      "rating": 86.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/samsung-galaxy-a71-374x800-1576143283.jpg",
+      "url": "https://www.gadgets360.com/samsung-galaxy-a71-price-in-india-91346",
+      "key_specs": {
+        "Display": "6.70-inch",
+        "Front_Camera": "32-megapixel ",
+        "Rear_Camera": "64-megapixel + 12-megapixel + 5-megapixel + 5-megapixel ",
+        "RAM": "8GB",
+        "Storage": "128GB",
+        "Battery_Capacity": "4500mAh",
+        "OS": "Android 10",
+        "Resolution": "1080x2400 pixels"
+      },
+      "review_url": "",
+      "discount": "0",
+      "availability": "In Stock",
+      "store_name": "Flipkart"
+    },
+    {
+      "id": "130575",
+      "name": "Samsung Galaxy S25",
+      "brand": "Samsung",
+      "price": 58880.0,
+      "currency": "INR",
+      "rating": 9.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/galaxy-s25-657x800-1737554203.jpg",
+      "url": "https://www.gadgets360.com/samsung-galaxy-s25-price-in-india-130575",
+      "key_specs": {
+        "Display": "6.20-inch",
+        "Processor": "Snapdragon 8 Elite",
+        "Front_Camera": "12-megapixel ",
+        "Rear_Camera": "50-megapixel + 12-megapixel + 10-megapixel ",
+        "RAM": "12GB",
+        "Storage": "128GB",
+        "Battery_Capacity": "4000mAh",
+        "OS": "Android 15",
+        "Resolution": "1080x2340 pixels"
+      },
+      "review_url": "https://www.gadgets360.com/mobiles/reviews/samsung-galaxy-s25-and-galaxy-s25-plus-review-7775355",
+      "discount": "21",
+      "availability": "In Stock",
+      "store_name": "Amazon"
+    },
+    {
+      "id": "130577",
+      "name": "Samsung Galaxy S25 Ultra",
+      "brand": "Samsung",
+      "price": 91487.0,
+      "currency": "INR",
+      "rating": 9.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/samsung-galaxy-s25-ultra-795x800-1738321292.jpg",
+      "url": "https://www.gadgets360.com/samsung-galaxy-s25-ultra-price-in-india-130577",
+      "key_specs": {
+        "Display": "6.90-inch",
+        "Processor": "Snapdragon 8 Elite",
+        "Front_Camera": "12-megapixel ",
+        "Rear_Camera": "200-megapixel + 50-megapixel + 50-megapixel + 10-megapixel",
+        "RAM": "12GB",
+        "Storage": "256GB",
+        "Battery_Capacity": "5000mAh",
+        "OS": "Android 15",
+        "Resolution": "1400x3120 pixels"
+      },
+      "review_url": "https://www.gadgets360.com/mobiles/reviews/samsung-s25-ultra-review-galaxy-7739819",
+      "discount": "29",
+      "availability": "In Stock",
+      "store_name": "Amazon"
+    },
+    {
+      "id": "124701",
+      "name": "Samsung Galaxy A35 5G",
+      "brand": "Samsung",
+      "price": 18999.0,
+      "currency": "INR",
+      "rating": 8.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/Galaxy-A35-5G-DB-709x800-1710158089.jpg",
+      "url": "https://www.gadgets360.com/samsung-galaxy-a35-5g-price-in-india-124701",
+      "key_specs": {
+        "Display": "6.60-inch",
+        "Front_Camera": "13-megapixel",
+        "Rear_Camera": "50-megapixel + 8-megapixel + 5-megapixel",
+        "RAM": "6GB",
+        "Storage": "128GB",
+        "Battery_Capacity": "5000mAh",
+        "OS": "Android 14",
+        "Resolution": "2340x1080 pixels"
+      },
+      "review_url": "https://www.gadgets360.com/mobiles/reviews/samsung-a55-a35-galaxy-review-5722476",
+      "discount": "44",
+      "availability": "In Stock",
+      "store_name": "Flipkart"
+    },
+    {
+      "id": "135779",
+      "name": "Samsung Galaxy S26",
+      "brand": "Samsung",
+      "price": 72900.0,
+      "currency": "INR",
+      "rating": 8.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/samsung-s26-1-657x800-1772434358.jpg",
+      "url": "https://www.gadgets360.com/samsung-galaxy-s26-price-in-india-135779",
+      "key_specs": {
+        "Display": "6.30-inch",
+        "Processor": "Samsung Exynos 2600",
+        "Front_Camera": "12-megapixel ",
+        "Rear_Camera": "50-megapixel + 12-megapixel + 10-megapixel ",
+        "RAM": "12GB",
+        "Storage": "256GB",
+        "Battery_Capacity": "4300mAh",
+        "OS": "Android 16",
+        "Resolution": "1080x2340 pixels"
+      },
+      "review_url": "https://www.gadgets360.com/mobiles/reviews/samsung-galaxy-s26-and-galaxy-s26-plus-review-11316740",
+      "discount": "17",
+      "availability": "In Stock",
+      "store_name": "Amazon"
+    }
+  ],
+  "article_cards": [
+    {
+      "id": "11858035",
+      "title": "Amazon Great Freedom Sale: Top Deals on Samsung Galaxy Z Fold 8 Ultra, Galaxy S25 Ultra, OnePlus 15 and More Teased",
+      "summary": "Amazon has started teasing the best deals on smartphones that will be available during the upcoming Amazon Great Freedom Sale 2026. The recently launched Samsung Galaxy Z Fold 8 Ultra, the company’s flagship book-style foldable, will be available at a discounted price of Rs. 1,90,999, instead of its listed price of Rs. 1,99,999. This means that buyers will be able t...",
+      "published_at": "2026-08-03T11:38:32+05:30",
+      "image_url": "https://i.gadgets360cdn.com/large/samsung-galaxy-z-fold-8-ultra-thumb_1784709501134.jpg",
+      "url": "https://www.gadgets360.com/mobiles/news/amazon-great-freedom-sale-smartphone-top-deals-revealed-offers-discounts-samsung-galaxy-z-fold-8-ultra-s25-oneplus-15-and-more-11858035",
+      "category": "Mobiles"
+    },
+    {
+      "id": "11879296",
+      "title": "Samsung Galaxy S26 FE Design Revealed in Fresh Leak Ahead of Launch",
+      "summary": "Official-looking renders of the Samsung Galaxy S26 FE have leaked online again ahead of its launch. The renders show the phone in black, green and purple colour options. The marketing names of these shades are currently unknown. The design of the handset closely resembles the vanilla Galaxy S26. Samsung could replace the individual camera rings seen on previous Fan Ed...",
+      "published_at": "2026-08-07T16:39:07+05:30",
+      "image_url": "https://i.gadgets360cdn.com/large/galaxy_s25_samsung_fe_small_1786098618637.jpg",
+      "url": "https://www.gadgets360.com/mobiles/news/samsung-galaxy-s26-fe-design-renders-colour-options-report-11879296",
+      "category": "Mobiles"
+    },
+    {
+      "id": "11878344",
+      "title": "Samsung Says More Galaxy Z Flip Users Are Upgrading to Galaxy Z Fold 8",
+      "summary": "Samsung has revealed new details about customer demand for its latest foldable smartphones through a report shared with the media. The Galaxy Z Fold 8 series has achieved record pre order figures, while more Galaxy Z Flip users have upgraded to the Fold lineup than in previous years. Samsung also disclosed the most popular colour options, Galaxy Watch attachment rates...",
+      "published_at": "2026-08-07T13:22:18+05:30",
+      "image_url": "https://i.gadgets360cdn.com/large/samsung_galaxy_z_fold_8_thumb_1784738564699.png",
+      "url": "https://www.gadgets360.com/mobiles/news/samsung-shares-galaxy-z-fold-8-pre-order-figures-report-11878344",
+      "category": "Mobiles"
+    }
+  ],
+  "related_links": [
+    {
+      "title": "Samsung Galaxy A71",
+      "url": "https://www.gadgets360.com/samsung-galaxy-a71-price-in-india-91346"
+    },
+    {
+      "title": "Samsung Galaxy S25",
+      "url": "https://www.gadgets360.com/samsung-galaxy-s25-price-in-india-130575"
+    },
+    {
+      "title": "Samsung Galaxy S25 Ultra",
+      "url": "https://www.gadgets360.com/samsung-galaxy-s25-ultra-price-in-india-130577"
+    },
+    {
+      "title": "Samsung Galaxy A35 5G",
+      "url": "https://www.gadgets360.com/samsung-galaxy-a35-5g-price-in-india-124701"
+    },
+    {
+      "title": "Samsung Galaxy S26",
+      "url": "https://www.gadgets360.com/samsung-galaxy-s26-price-in-india-135779"
+    },
+    {
+      "title": "Amazon Great Freedom Sale: Top Deals on Samsung Galaxy Z Fold 8 Ultra, Galaxy S25 Ultra, OnePlus 15 and More Teased",
+      "url": "https://www.gadgets360.com/mobiles/news/amazon-great-freedom-sale-smartphone-top-deals-revealed-offers-discounts-samsung-galaxy-z-fold-8-ultra-s25-oneplus-15-and-more-11858035"
+    },
+    {
+      "title": "Samsung Galaxy S26 FE Design Revealed in Fresh Leak Ahead of Launch",
+      "url": "https://www.gadgets360.com/mobiles/news/samsung-galaxy-s26-fe-design-renders-colour-options-report-11879296"
+    },
+    {
+      "title": "Samsung Says More Galaxy Z Flip Users Are Upgrading to Galaxy Z Fold 8",
+      "url": "https://www.gadgets360.com/mobiles/news/samsung-shares-galaxy-z-fold-8-pre-order-figures-report-11878344"
+    }
+  ],
+  "metadata": {
+    "intent": "search",
+    "entity": "phone",
+    "budget": null,
+    "used_gemini": true,
+    "source_apis": [
+      "products",
+      "news"
+    ],
+    "cached": false,
+    "generated_at": "2026-08-12T12:23:09.032659Z"
+  },
+  "created_at": "2026-08-12T17:53:09.033539"
+}

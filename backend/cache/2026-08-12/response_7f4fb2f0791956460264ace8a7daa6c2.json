@@ -1,0 +1,221 @@
+{
+  "cache_key": "intent=search|cat=laptop|brand=none|prod=none|pmin=none|pmax=80000|ram=none|storage=none|rev=0|news=0",
+  "cache_hash": "7f4fb2f0791956460264ace8a7daa6c2",
+  "intent": {
+    "intent": "search",
+    "entity": "laptop",
+    "category": "laptop",
+    "brand": null,
+    "product_name": null,
+    "price_min": null,
+    "price_max": 80000.0,
+    "ram": null,
+    "storage": null,
+    "reviews": false,
+    "news": false,
+    "keywords": null,
+    "query_text": "gaming laptop",
+    "budget": 80000.0,
+    "priority": null,
+    "count": null,
+    "compare_items": null,
+    "needs_summary": true,
+    "in_scope": true,
+    "rejection_reason": null
+  },
+  "answer": "Based on the provided data, there are currently no dedicated gaming laptops available under your ₹80,000 budget. \n\nThe available options—such as the **Acer Aspire Lite AL15-53** (₹50,490), **Asus Vivobook 15 (2024)** (₹57,999), **Dell Inspiron 14 (5410)** (₹54,700), and **Asus Chromebook CX14 (2025)** (₹35,999)—are designed for general productivity and everyday tasks rather than dedicated gaming performance. \n\nPlease check back later for updated listings or let me know if you would like details on any of the general-purpose laptops listed above!",
+  "product_cards": [
+    {
+      "id": "133917",
+      "name": "Acer Aspire Lite AL15-53",
+      "brand": "Acer",
+      "price": 50490.0,
+      "currency": "INR",
+      "rating": 0.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/71o7b6YJMfL.-SL1500-800x633-1754392144.jpg",
+      "url": "https://www.gadgets360.com/acer-aspire-lite-al15-53-price-in-india-133917",
+      "key_specs": {
+        "Display_size": "15.60-inch",
+        "Display_resolution": "1920x1080 pixels",
+        "Processor": "Core i3",
+        "RAM": "8GB",
+        "OS": "Windows 11 Home",
+        "Hard_disk": "512GB",
+        "Graphics": "Intel UHD Graphics",
+        "Weight": "1.75 kg"
+      },
+      "review_url": "",
+      "discount": "0",
+      "availability": "In Stock",
+      "store_name": "Flipkart"
+    },
+    {
+      "id": "131762",
+      "name": "Asus Chromebook CX14 (2025)",
+      "brand": "Asus",
+      "price": 35999.0,
+      "currency": "INR",
+      "rating": 0.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/asus-cx14-db-1260x800-1745412725.png",
+      "url": "https://www.gadgets360.com/asus-chromebook-cx14-2025-price-in-india-131762",
+      "key_specs": {
+        "Display_size": "14.00-inch",
+        "Display_resolution": "1920x1080 pixels",
+        "Processor": "Celeron",
+        "RAM": "8GB",
+        "OS": "Windows 11 Home",
+        "Weight": "1.39 kg"
+      },
+      "review_url": "",
+      "discount": "10",
+      "availability": "In Stock",
+      "store_name": "Flipkart"
+    },
+    {
+      "id": "124769",
+      "name": "Asus Vivobook 15 (2024)",
+      "brand": "Asus",
+      "price": 57999.0,
+      "currency": "INR",
+      "rating": 0.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/Vivobook-15-DB-709x800-1710336399.jpg",
+      "url": "https://www.gadgets360.com/asus-vivobook-15-2024-price-in-india-124769",
+      "key_specs": {
+        "Display_size": "15.60-inch",
+        "Display_resolution": "1920x1080 pixels",
+        "Touchscreen": "Yes",
+        "Processor": "Core i5",
+        "RAM": "16GB",
+        "SSD": "1TB",
+        "Graphics": "Intel Iris Xe",
+        "Weight": "1.70 kg"
+      },
+      "review_url": "",
+      "discount": "3",
+      "availability": "In Stock",
+      "store_name": "Flipkart"
+    },
+    {
+      "id": "101315",
+      "name": "Dell Inspiron 14 (5410)",
+      "brand": "Dell",
+      "price": 54700.0,
+      "currency": "INR",
+      "rating": 0.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/Inspiron-14-DB-694x800-1618318348.jpeg",
+      "url": "https://www.gadgets360.com/dell-inspiron-14-5410-price-in-india-101315",
+      "key_specs": {
+        "Display_size": "14.00-inch",
+        "Display_resolution": "1920x1080 pixels",
+        "Touchscreen": "No",
+        "Processor": "Core i3",
+        "RAM": "4GB",
+        "OS": "Windows 10",
+        "Hard_disk": "No",
+        "SSD": "128GB",
+        "Weight": "1.46 kg"
+      },
+      "review_url": "",
+      "discount": "0",
+      "availability": "In Stock",
+      "store_name": null
+    },
+    {
+      "id": "7891",
+      "name": "Acer Aspire E E15-E5-576",
+      "brand": "Acer",
+      "price": 31996.0,
+      "currency": "INR",
+      "rating": 0.0,
+      "image_url": "https://i.gadgets360cdn.com/products/laptops/large/1546455883_635_acer_aspire-e-e15-e5-576.jpg",
+      "url": "https://www.gadgets360.com/acer-aspire-e-e15-e5-576-7891",
+      "key_specs": {
+        "Display_size": "15.60-inch",
+        "Processor": "Core i3",
+        "RAM": "4GB",
+        "OS": "Linux",
+        "Hard_disk": "1TB",
+        "SSD": "No"
+      },
+      "review_url": "",
+      "discount": "0",
+      "availability": "Out of Stock",
+      "store_name": "Flipkart"
+    }
+  ],
+  "article_cards": [
+    {
+      "id": "11580065",
+      "title": "Asus TUF 16 (2026) Gaming Laptop Unveiled Alongside ExpertBook B5 Flip G2 (2026) at Computex 2026",
+      "summary": "Asus TUF 16 (2026) and ExpertBook B5 Flip G2 (2026) were launched on Tuesday during the ongoing Computex 2026 event. The new Asus TUF 16 (2026) gaming laptop is powered by up to an Intel Core i7 14650HX processor, featuring eight efficiency cores and eight performance cores, delivering a peak clock speed of 5.2GHz. Meanwhile, the Asus ExpertBook B5 Flip G2 (2026) is p...",
+      "published_at": "2026-06-02T15:34:14+05:30",
+      "image_url": "https://i.gadgets360cdn.com/large/asus_tuf_16_2026_thumb_1780394648327.png",
+      "url": "https://www.gadgets360.com/laptops/news/asus-tuf-16-2026-expertbook-b5-flip-g2-launch-computex-specifications-features-11580065",
+      "category": "PC/ Laptops"
+    },
+    {
+      "id": "10892053",
+      "title": "HP HyperX Omen 15 Gaming Laptop Launched in India With Intel Core i7 CPU, RTX 5060 GPU",
+      "summary": "HP HyperX Omen 15 gaming laptop was launched in India on Tuesday as its first notebook under the HyperX brand. Starting at Rs. 1,49,999, the laptop offers a 15.3-inch WQXGA display with a 180Hz refresh rate, powered by an Intel Core i7-14650HX processor and Nvidia GeForce RTX 5060 GPU. It includes 24GB DDR5 RAM, a 1TB SSD, AI-based performance tuning, advanced cooling...",
+      "published_at": "2026-01-27T14:07:31+05:30",
+      "image_url": "https://i.gadgets360cdn.com/large/hp_hyperx_omen_15_hp_thumb_1769502395912.jpg",
+      "url": "https://www.gadgets360.com/laptops/news/hp-hyperx-omen-15-price-india-launch-availability-specifications-features-10892053",
+      "category": "PC/ Laptops"
+    },
+    {
+      "id": "9776072",
+      "title": "Lenovo Legion Pro Rollable Gaming Laptop With Horizontal Rollable OLED Display to Launch in Early 2026: Report",
+      "summary": "Lenovo is reportedly preparing its first rollable gaming laptop under the Legion brand, called the Legion Pro Rollable. According to a new report, the device will feature a horizontally expanding OLED display that can switch to an ultrawide 21:9 aspect ratio for immersive gaming. It may debut at CES 2026 and launch commercially in early 2026. The laptop is expected to...",
+      "published_at": "2025-12-09T10:44:14+05:30",
+      "image_url": "https://i.gadgets360cdn.com/large/lenovo_ThinkBook_Plus_Gen_6_Rollable_lenovo_thumb_1765255439691.jpg",
+      "url": "https://www.gadgets360.com/laptops/news/lenovo-legion-pro-rollable-gaming-laptop-launch-expected-ces-2026-report-9776072",
+      "category": "PC/ Laptops"
+    }
+  ],
+  "related_links": [
+    {
+      "title": "Acer Aspire Lite AL15-53",
+      "url": "https://www.gadgets360.com/acer-aspire-lite-al15-53-price-in-india-133917"
+    },
+    {
+      "title": "Asus Chromebook CX14 (2025)",
+      "url": "https://www.gadgets360.com/asus-chromebook-cx14-2025-price-in-india-131762"
+    },
+    {
+      "title": "Asus Vivobook 15 (2024)",
+      "url": "https://www.gadgets360.com/asus-vivobook-15-2024-price-in-india-124769"
+    },
+    {
+      "title": "Dell Inspiron 14 (5410)",
+      "url": "https://www.gadgets360.com/dell-inspiron-14-5410-price-in-india-101315"
+    },
+    {
+      "title": "Acer Aspire E E15-E5-576",
+      "url": "https://www.gadgets360.com/acer-aspire-e-e15-e5-576-7891"
+    },
+    {
+      "title": "Asus TUF 16 (2026) Gaming Laptop Unveiled Alongside ExpertBook B5 Flip G2 (2026) at Computex 2026",
+      "url": "https://www.gadgets360.com/laptops/news/asus-tuf-16-2026-expertbook-b5-flip-g2-launch-computex-specifications-features-11580065"
+    },
+    {
+      "title": "HP HyperX Omen 15 Gaming Laptop Launched in India With Intel Core i7 CPU, RTX 5060 GPU",
+      "url": "https://www.gadgets360.com/laptops/news/hp-hyperx-omen-15-price-india-launch-availability-specifications-features-10892053"
+    },
+    {
+      "title": "Lenovo Legion Pro Rollable Gaming Laptop With Horizontal Rollable OLED Display to Launch in Early 2026: Report",
+      "url": "https://www.gadgets360.com/laptops/news/lenovo-legion-pro-rollable-gaming-laptop-launch-expected-ces-2026-report-9776072"
+    }
+  ],
+  "metadata": {
+    "intent": "search",
+    "entity": "laptop",
+    "used_gemini": true,
+    "source_apis": [
+      "products",
+      "news"
+    ],
+    "cached": false,
+    "generated_at": "2026-08-12T07:28:43.597559Z"
+  },
+  "created_at": "2026-08-12T12:58:43.598787"
+}

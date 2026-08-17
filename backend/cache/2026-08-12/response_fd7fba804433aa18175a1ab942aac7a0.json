@@ -1,0 +1,57 @@
+{
+  "cache_key": "intent=news|cat=tech|brand=none|prod=none|pmin=none|pmax=none|ram=none|storage=none|rev=0|news=1",
+  "cache_hash": "fd7fba804433aa18175a1ab942aac7a0",
+  "intent": {
+    "intent": "news",
+    "entity": "tech",
+    "category": "tech",
+    "brand": null,
+    "product_name": null,
+    "price_min": null,
+    "price_max": null,
+    "ram": null,
+    "storage": null,
+    "reviews": false,
+    "news": true,
+    "keywords": null,
+    "query_text": "latest tech news today",
+    "budget": null,
+    "priority": null,
+    "count": null,
+    "compare_items": null,
+    "needs_summary": true,
+    "in_scope": true,
+    "rejection_reason": null
+  },
+  "answer": "Here is the latest tech news based on the available updates:\n\n### **Oppo Pad 5 Pro Tipped for India Launch**\nThe Oppo Pad 5 Pro has reportedly been spotted on the Bureau of Indian Standards (BIS) certification database with the model number **OPD2516**. This listing suggests that Oppo is likely preparing to launch the tablet in India soon.",
+  "product_cards": [],
+  "article_cards": [
+    {
+      "id": "11898371",
+      "title": "Oppo Pad 5 Pro India Launch Tipped as Tablet Appears on BIS Certification Website",
+      "summary": "Oppo Pad 5 Pro has reportedly been spotted on the Bureau of Indian Standards (BIS) database with the model number OPD2516. The listing on the certification website suggests that the tech firm could be planning to launch its new flagship tablet in India soon. The tipster has also shared the key specifications and features of the upcoming Oppo Pad 5 Pro, which appears t...",
+      "published_at": "2026-08-12T11:34:45+05:30",
+      "image_url": "https://i.gadgets360cdn.com/large/oppo_pad_5_pro_small_1776168929559.jpg",
+      "url": "https://www.gadgets360.com/tablets/news/oppo-pad-5-pro-india-launch-tipped-bis-certifications-specifications-features-11898371",
+      "category": "Tablets"
+    }
+  ],
+  "related_links": [
+    {
+      "title": "Oppo Pad 5 Pro India Launch Tipped as Tablet Appears on BIS Certification Website",
+      "url": "https://www.gadgets360.com/tablets/news/oppo-pad-5-pro-india-launch-tipped-bis-certifications-specifications-features-11898371"
+    }
+  ],
+  "metadata": {
+    "intent": "news",
+    "entity": "tech",
+    "budget": null,
+    "used_gemini": true,
+    "source_apis": [
+      "news"
+    ],
+    "cached": false,
+    "generated_at": "2026-08-12T07:53:49.780645Z"
+  },
+  "created_at": "2026-08-12T13:23:49.781076"
+}

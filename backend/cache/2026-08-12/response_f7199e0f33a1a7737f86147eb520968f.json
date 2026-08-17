@@ -1,0 +1,84 @@
+{
+  "cache_key": "intent=comparison|cat=phone|brand=none|prod=none|pmin=none|pmax=none|ram=none|storage=none|rev=0|news=0",
+  "cache_hash": "f7199e0f33a1a7737f86147eb520968f",
+  "intent": {
+    "intent": "comparison",
+    "entity": "mobile",
+    "category": "mobile",
+    "brand": null,
+    "product_name": null,
+    "price_min": null,
+    "price_max": null,
+    "ram": null,
+    "storage": null,
+    "reviews": false,
+    "news": false,
+    "keywords": null,
+    "query_text": null,
+    "budget": null,
+    "priority": null,
+    "count": null,
+    "compare_items": [
+      "iPhone 15",
+      "Samsung Galaxy S24"
+    ],
+    "needs_summary": true,
+    "in_scope": true,
+    "rejection_reason": null
+  },
+  "answer": "Based on the available data, here is a brief comparison between the **Samsung Galaxy S24** and the **Apple iPhone 15 Plus**:\n\n* **Apple iPhone 15 Plus**: Has a rating of **92** with no current discount (0% off). It is currently **Out of Stock**.\n* **Samsung Galaxy S24**: Has a listed rating of **0** and comes with a **33% off** discount. It is also currently **Out of Stock**.\n\n*Note: Detailed hardware specifications, features, and exact prices are not provided in the current database results to conduct a deeper technical comparison.*",
+  "product_cards": [
+    {
+      "id": "prod_ba30d35d52c5436796ab6db8036187fb",
+      "name": "Samsung Galaxy S24",
+      "brand": "samsung",
+      "price": null,
+      "currency": "INR",
+      "rating": 0.0,
+      "image_url": "https://assets.gadgets360cdn.com/content/assets/icons/default_mobile_icon.jpg",
+      "url": "https://www.gadgets360.com/",
+      "key_specs": {},
+      "review_url": "",
+      "discount": "33",
+      "availability": "Out of Stock",
+      "store_name": "Flipkart"
+    },
+    {
+      "id": "prod_51e4d6044fcb4889abe21c3ffef472da",
+      "name": "Apple iPhone 15 Plus",
+      "brand": "apple",
+      "price": null,
+      "currency": "INR",
+      "rating": 92.0,
+      "image_url": "https://assets.gadgets360cdn.com/content/assets/icons/default_mobile_icon.jpg",
+      "url": "https://www.gadgets360.com/",
+      "key_specs": {},
+      "review_url": "",
+      "discount": "0",
+      "availability": "Out of Stock",
+      "store_name": "Flipkart"
+    }
+  ],
+  "article_cards": [],
+  "related_links": [
+    {
+      "title": "Samsung Galaxy S24",
+      "url": "https://www.gadgets360.com/"
+    },
+    {
+      "title": "Apple iPhone 15 Plus",
+      "url": "https://www.gadgets360.com/"
+    }
+  ],
+  "metadata": {
+    "intent": "comparison",
+    "entity": "mobile",
+    "used_gemini": true,
+    "source_apis": [
+      "products"
+    ],
+    "cached": false,
+    "generated_at": "2026-08-12T07:22:28.325723Z"
+  },
+  "created_at": "2026-08-12T12:52:28.326844"
+}

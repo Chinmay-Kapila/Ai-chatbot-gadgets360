@@ -333,34 +333,62 @@ def _filter_by_entity(products: List[Dict[str, Any]], parsed: ParsedQuery) -> Li
 def rank_products(
     products: List[Dict[str, Any]],
     parsed: ParsedQuery,
-    top_k: Optional[int] = None,
+    top_k: int = 5,
 ) -> List[Dict[str, Any]]:
-    """Rank, deduplicate, and filter products down to the most relevant top-k."""
+    """
+    Ranks products based on match quality to parsed filters.
+    Ensures products are not discarded when no extra filters are present.
+    """
     if not products:
         return []
 
-    products = _filter_by_entity(products, parsed)
+    scored_products = []
+    for p in products:
+        # Give every product a base score so general queries aren't discarded
+        score = 1.0  
 
-    resolved_top_k = top_k or min(parsed.count or DEFAULT_PRODUCT_TOP_K, DEFAULT_PRODUCT_TOP_K)
-    query_tokens = _build_query_tokens(parsed)
+        p_name = (p.get("name") or "").lower()
+        p_brand = (p.get("brand") or "").lower()
 
-    scored = [
-        ScoredItem(item=p, score=_score_product(p, parsed, query_tokens)) for p in products
-    ]
-    scored = _deduplicate(
-        scored, key_fn=lambda p: _normalize(p.get("name", "")) or str(p.get("id", ""))
-    )
-    scored.sort(key=lambda s: s.score, reverse=True)
+        # Brand match boost
+        if parsed.brand:
+            target_brand = parsed.brand.lower()
+            if target_brand in p_brand or target_brand in p_name:
+                score += 2.0
 
-    selected = _select_relevant(scored, resolved_top_k)
+        # Rating boost (if available)
+        rating = p.get("rating")
+        if rating and isinstance(rating, (int, float)) and rating > 0:
+            score += (rating / 20.0)
+
+        # Discount boost (if available)
+        discount = p.get("discount")
+        if discount and isinstance(discount, (int, float)):
+            score += (discount / 50.0)
+
+        # Priority keyword boost (camera, gaming, battery)
+        if parsed.priority:
+            prio = parsed.priority.lower()
+            specs_str = str(p.get("key_specs") or {}).lower()
+            if prio in p_name or prio in specs_str:
+                score += 1.5
+
+        scored_products.append((score, p))
+
+    # Sort descending by score
+    scored_products.sort(key=lambda x: x[0], reverse=True)
+
+    # Pick top_k products
+    selected = [p for score, p in scored_products[:top_k]]
+    top_score = scored_products[0][0] if scored_products else 0.0
 
     logger.info(
         "Ranked %d product(s) -> %d selected (top score=%.2f)",
-        len(products), len(selected), scored[0].score if scored else 0.0,
+        len(products),
+        len(selected),
+        top_score,
     )
-
-    return [s.item for s in selected]
-
+    return selected
 
 # ---------------------------------------------------------------------------
 # Article (review / news) scoring + ranking

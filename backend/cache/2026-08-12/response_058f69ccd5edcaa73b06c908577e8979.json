@@ -1,0 +1,197 @@
+{
+  "cache_key": "intent=search|cat=laptop|brand=none|prod=none|pmin=none|pmax=none|ram=none|storage=none|rev=0|news=0",
+  "cache_hash": "058f69ccd5edcaa73b06c908577e8979",
+  "intent": {
+    "intent": "search",
+    "entity": "laptop",
+    "category": "laptop",
+    "brand": null,
+    "product_name": null,
+    "price_min": null,
+    "price_max": null,
+    "ram": null,
+    "storage": null,
+    "reviews": false,
+    "news": false,
+    "keywords": null,
+    "query_text": "cheapest laptop",
+    "budget": null,
+    "priority": null,
+    "count": null,
+    "compare_items": null,
+    "needs_summary": true,
+    "in_scope": true,
+    "rejection_reason": null
+  },
+  "answer": "The cheapest laptop in the provided list is the **JioBook 2023**, priced at **₹9,999**. \n\nHere is a quick look at its key details:\n- **Price:** ₹9,999\n- **Display:** 11.60-inch (768x1366 pixels)\n- **RAM:** 4GB\n- **Rating:** 20\n\nFor comparison, the next most affordable laptop from the list is the **Microsoft Surface Book CR9-00001** at ₹54,149, while the highest-priced option is the **Lenovo Yoga Slim 7 Aura Edition** at ₹1,75,000.",
+  "product_cards": [
+    {
+      "id": "119965",
+      "name": "JioBook 2023",
+      "brand": "Jio",
+      "price": 9999.0,
+      "currency": "INR",
+      "rating": 20.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/jiobook-2023-DB-709x800-1690810107.jpg",
+      "url": "https://www.gadgets360.com/jiobook-2023-price-in-india-119965",
+      "key_specs": {
+        "Display_size": "11.60-inch",
+        "Display_resolution": "768x1366 pixels",
+        "RAM": "4GB",
+        "OS": "Android",
+        "Weight": "0.99 kg"
+      },
+      "review_url": "",
+      "discount": "60",
+      "availability": "In Stock",
+      "store_name": "Amazon"
+    },
+    {
+      "id": "8830",
+      "name": "Lenovo ChromeBook S330",
+      "brand": "Lenovo",
+      "price": 58782.0,
+      "currency": "INR",
+      "rating": 76.0,
+      "image_url": "https://i.gadgets360cdn.com/products/laptops/large/1546456936_635_lenovo_chromebook-s330.jpg",
+      "url": "https://www.gadgets360.com/lenovo-chromebook-s330-8830",
+      "key_specs": {
+        "Display_size": "14.00-inch",
+        "Display_resolution": "1366x768 pixels",
+        "RAM": "4GB",
+        "OS": "Chrome OS",
+        "Hard_disk": "64GB",
+        "SSD": "No",
+        "Weight": "1.50 kg"
+      },
+      "review_url": "",
+      "discount": "0",
+      "availability": "In Stock",
+      "store_name": "Amazon"
+    },
+    {
+      "id": "131739",
+      "name": "Asus Vivobook S14 (2025, Intel Core i5)",
+      "brand": "Asus",
+      "price": 63990.0,
+      "currency": "INR",
+      "rating": 0.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/asus-vivobook-s14-1144x800-1745334551.jpg",
+      "url": "https://www.gadgets360.com/asus-vivobook-s14-2025-intel-core-i5-price-in-india-131739",
+      "key_specs": {
+        "Display_size": "14.00-inch",
+        "Display_resolution": "1920x1200 pixels",
+        "Touchscreen": "No",
+        "Processor": "Core i5",
+        "RAM": "16GB",
+        "OS": "Windows 11 Home",
+        "SSD": "512GB",
+        "Graphics": "Intel UHD Graphics",
+        "Weight": "1.40 kg"
+      },
+      "review_url": "",
+      "discount": "24",
+      "availability": "In Stock",
+      "store_name": "Flipkart"
+    },
+    {
+      "id": "133909",
+      "name": "Lenovo Yoga Slim 7 Aura Edition",
+      "brand": "Lenovo",
+      "price": 175000.0,
+      "currency": "INR",
+      "rating": 0.0,
+      "image_url": "https://i.gadgets360cdn.com/products/large/71n9XzlKhWL.-SL1500-Copy-800x634-1754390194.jpg",
+      "url": "https://www.gadgets360.com/lenovo-yoga-slim-7-aura-edition-price-in-india-133909",
+      "key_specs": {
+        "Display_size": "15.00-inch",
+        "Display_resolution": "‎2880x1800 pixels",
+        "Touchscreen": "No",
+        "Processor": "Intel Core Ultra 7",
+        "RAM": "32GB",
+        "OS": "Windows 11 Home",
+        "SSD": "1TB",
+        "Graphics": "Integrated Intel Graphics",
+        "Weight": "1.53 kg"
+      },
+      "review_url": "",
+      "discount": "12",
+      "availability": "In Stock",
+      "store_name": "Amazon"
+    },
+    {
+      "id": "7238",
+      "name": "Microsoft Surface Book CR9-00001",
+      "brand": "Microsoft",
+      "price": 54149.0,
+      "currency": "INR",
+      "rating": 0.0,
+      "image_url": "https://i.gadgets360cdn.com/products/laptops/large/1546455180_635_microsoft_surface-book-cr9-00001.jpg",
+      "url": "https://www.gadgets360.com/microsoft-surface-book-cr9-00001-7238",
+      "key_specs": {
+        "Display_size": "13.30-inch",
+        "Display_resolution": "2256x1504 pixels",
+        "Touchscreen": "Yes",
+        "Processor": "Core i5",
+        "RAM": "8GB",
+        "OS": "Windows 10",
+        "Hard_disk": "No",
+        "SSD": "128GB",
+        "Weight": "1.28 kg"
+      },
+      "review_url": "",
+      "discount": "0",
+      "availability": "In Stock",
+      "store_name": null
+    }
+  ],
+  "article_cards": [
+    {
+      "id": "868988",
+      "title": "RDP ThinBook Launched as 'India's Cheapest 14.1-Inch Laptop'",
+      "summary": "RDP ThinBook price in India is Rs. 9,999, and it features a 14.1-inch HD display.",
+      "published_at": "2016-08-04T11:26:18+05:30",
+      "image_url": "http://cdn.ndtv.com/tech/images/gadgets/thumb/rdp_thinbook_ultra_small.jpg",
+      "url": "https://www.gadgets360.com/laptops/news/rdp-thinbook-launched-as-indias-cheapest-141-inch-laptop-868988",
+      "category": "PC/ Laptops"
+    }
+  ],
+  "related_links": [
+    {
+      "title": "JioBook 2023",
+      "url": "https://www.gadgets360.com/jiobook-2023-price-in-india-119965"
+    },
+    {
+      "title": "Lenovo ChromeBook S330",
+      "url": "https://www.gadgets360.com/lenovo-chromebook-s330-8830"
+    },
+    {
+      "title": "Asus Vivobook S14 (2025, Intel Core i5)",
+      "url": "https://www.gadgets360.com/asus-vivobook-s14-2025-intel-core-i5-price-in-india-131739"
+    },
+    {
+      "title": "Lenovo Yoga Slim 7 Aura Edition",
+      "url": "https://www.gadgets360.com/lenovo-yoga-slim-7-aura-edition-price-in-india-133909"
+    },
+    {
+      "title": "Microsoft Surface Book CR9-00001",
+      "url": "https://www.gadgets360.com/microsoft-surface-book-cr9-00001-7238"
+    },
+    {
+      "title": "RDP ThinBook Launched as 'India's Cheapest 14.1-Inch Laptop'",
+      "url": "https://www.gadgets360.com/laptops/news/rdp-thinbook-launched-as-indias-cheapest-141-inch-laptop-868988"
+    }
+  ],
+  "metadata": {
+    "intent": "search",
+    "entity": "laptop",
+    "used_gemini": true,
+    "source_apis": [
+      "products",
+      "news"
+    ],
+    "cached": false,
+    "generated_at": "2026-08-12T07:31:40.851950Z"
+  },
+  "created_at": "2026-08-12T13:01:40.852793"
+}

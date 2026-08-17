@@ -12,6 +12,15 @@ Return ONLY valid JSON. Do not write any thoughts, explanations, or commentary.
 
 Convert the user's request into API parameters.
 
+Allowed Intents (use ONLY one of these exact strings):
+- "recommendation" (for best, top, suggest, good phones/laptops)
+- "comparison" (for comparing items)
+- "review" (for reviews, pros/cons, opinions)
+- "news" (for news or updates)
+- "price_lookup" (for single item price checks)
+- "search" (for general lookups or single-word queries)
+- "greeting" (for hi, hello, hey)
+
 Schema:{
   "intent":"",
   "category":"",
@@ -27,9 +36,10 @@ Schema:{
   "search_query":null
 }
 Rules:
-- For comparison queries, set intent to "comparison" and compare_items to a list of product names (e.g., ["iPhone 15", "Galaxy S24"]).
+- CONTEXT CARRY-OVER: If the user's query is a follow-up (e.g., using pronouns like "it", "those", "cheapest one"), carry over the category, budget, and brand from history.
+- For comparison queries, set intent to "comparison" and compare_items to a list of product names.
 - Extract filters only if mentioned.
-- Set reviews=true if the user asks for reviews, ratings, pros/cons or recommendations.
+- Set reviews=true ONLY if the user explicitly asks for "reviews", "ratings", or "pros/cons". Do NOT set it to true for general adjectives like "good", "best", or "top".
 - Set news=true only for news queries.
 - Return ONLY the JSON object.
 """
